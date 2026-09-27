@@ -1,0 +1,1317 @@
+{% extends "base.html" %}
+
+{% block title %}PriceLens - Watchlist{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =====================================================
+   WATCHLIST PAGE
+===================================================== */
+
+.watchlist-page {
+    min-height: calc(100vh - 68px);
+    display: flex;
+    gap: 22px;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.watchlist-sidebar {
+    width: 230px;
+    flex-shrink: 0;
+    padding: 22px 15px;
+    border-right: 1px solid rgba(255,255,255,.06);
+    background: rgba(255,255,255,.015);
+}
+
+.sidebar-section-title {
+    color: #475569;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 10px 12px 12px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .25s;
+}
+
+.sidebar-link:hover {
+    color: white;
+    background: rgba(99,102,241,.10);
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    color: white;
+
+    background: linear-gradient(
+        135deg,
+        rgba(124,58,237,.25),
+        rgba(37,99,235,.18)
+    );
+
+    border: 1px solid rgba(99,102,241,.18);
+}
+
+.sidebar-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.04);
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,.06);
+    margin: 20px 5px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.watchlist-main {
+    flex: 1;
+    min-width: 0;
+    padding: 25px 20px 45px;
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.watchlist-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+}
+
+.watchlist-title {
+    font-size: 27px;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.watchlist-subtitle {
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* USER */
+
+.profile-button {
+    border: 1px solid rgba(255,255,255,.08);
+
+    background: rgba(255,255,255,.035);
+
+    color: #cbd5e1;
+
+    border-radius: 10px;
+
+    height: 42px;
+
+    padding: 0 13px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.profile-avatar {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #2563eb
+        );
+
+    color: white;
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   SUMMARY CARDS
+===================================================== */
+
+.watchlist-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.watchlist-stat {
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.045),
+            rgba(255,255,255,.018)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+}
+
+.stat-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 16px;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(99,102,241,.12);
+
+    color: #a5b4fc;
+
+    font-weight: 900;
+}
+
+.stat-trend {
+    color: #4ade80;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.stat-label {
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+}
+
+.stat-value {
+    font-size: 28px;
+
+    font-weight: 900;
+}
+
+
+/* =====================================================
+   WATCHLIST CARD
+===================================================== */
+
+.watchlist-card {
+    padding: 22px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+}
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+.card-header span {
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   PRODUCT GRID
+===================================================== */
+
+.watchlist-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+.product-card {
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.045),
+            rgba(255,255,255,.018)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    overflow: hidden;
+
+    transition: .25s;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(99,102,241,.25);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.025)
+        );
+}
+
+
+/* =====================================================
+   PRODUCT IMAGE
+===================================================== */
+
+.product-image-wrapper {
+    width: 100%;
+
+    height: 175px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.06);
+}
+
+.product-image {
+    width: 100%;
+    height: 175px;
+
+    object-fit: contain;
+
+    padding: 15px;
+}
+
+.no-image {
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   PRODUCT CONTENT
+===================================================== */
+
+.product-content {
+    padding: 18px;
+}
+
+.product-name {
+    color: #e2e8f0;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    line-height: 1.45;
+
+    min-height: 41px;
+
+    display: -webkit-box;
+
+    -webkit-line-clamp: 2;
+
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   PRICE SECTION
+===================================================== */
+
+.price-section {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+
+    margin-top: 17px;
+}
+
+.price-box {
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,.05);
+}
+
+.price-label {
+    color: #64748b;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    margin-bottom: 5px;
+}
+
+.current-price {
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 900;
+}
+
+.target-price {
+    color: #4ade80;
+
+    font-size: 17px;
+
+    font-weight: 900;
+}
+
+
+/* =====================================================
+   PRICE HISTORY
+===================================================== */
+
+.price-info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap: 7px;
+
+    margin-top: 13px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.05);
+}
+
+.info-box {
+    text-align: center;
+}
+
+.info-title {
+    color: #475569;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    margin-bottom: 5px;
+}
+
+.info-value {
+    color: #cbd5e1;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 13px;
+
+    padding: 7px 9px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    font-size: 9px;
+
+    font-weight: 800;
+}
+
+.target-reached {
+    background:
+        rgba(34,211,238,.08);
+
+    color: #22d3ee;
+}
+
+.monitoring {
+    background:
+        rgba(34,197,94,.08);
+
+    color: #4ade80;
+}
+
+
+/* =====================================================
+   VIEW PRODUCT BUTTON
+===================================================== */
+
+.view-btn {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border-radius: 9px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #2563eb
+        );
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    transition: .25s;
+}
+
+.view-btn:hover {
+    color: white;
+
+    text-decoration: none;
+
+    transform: translateY(-1px);
+
+    opacity: .9;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.no-products {
+    padding: 55px 15px;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.empty-title {
+    color: #e2e8f0;
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+    margin-bottom: 7px;
+}
+
+.empty-text {
+    color: #64748b;
+
+    font-size: 11px;
+
+    margin-bottom: 18px;
+}
+
+.add-product-btn {
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #2563eb
+        );
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.add-product-btn:hover {
+    color: white;
+
+    text-decoration: none;
+
+    opacity: .9;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width:1100px) {
+
+    .watchlist-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+
+@media (max-width:900px) {
+
+    .watchlist-stats {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+
+@media (max-width:800px) {
+
+    .watchlist-page {
+        display: block;
+    }
+
+    .watchlist-sidebar {
+        width: 100%;
+
+        border-right: none;
+
+        border-bottom:
+            1px solid
+            rgba(255,255,255,.06);
+
+        padding: 12px;
+
+        display: flex;
+
+        overflow-x: auto;
+
+        gap: 5px;
+    }
+
+    .sidebar-section-title,
+    .sidebar-divider {
+        display: none;
+    }
+
+    .sidebar-link {
+        margin: 0;
+
+        white-space: nowrap;
+    }
+
+    .watchlist-main {
+        padding:
+            25px 10px 40px;
+    }
+}
+
+
+@media (max-width:600px) {
+
+    .watchlist-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-button {
+        display: none;
+    }
+
+    .watchlist-title {
+        font-size: 22px;
+    }
+
+    .watchlist-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+
+<div class="watchlist-page">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="watchlist-sidebar">
+
+    <div class="sidebar-section-title">
+        MAIN MENU
+    </div>
+
+
+    <!-- Dashboard -->
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        class="sidebar-link"
+    >
+
+        <div class="sidebar-icon">
+            D
+        </div>
+
+        Dashboard
+
+    </a>
+
+
+    <!-- Products -->
+
+    <a
+        href="{{ url_for('products') }}"
+        class="sidebar-link"
+    >
+
+        <div class="sidebar-icon">
+            P
+        </div>
+
+        Products
+
+    </a>
+
+
+    <!-- Price Analytics -->
+
+    <a
+        href="{{ url_for('price_analytics') }}"
+        class="sidebar-link"
+    >
+
+        <div class="sidebar-icon">
+            A
+        </div>
+
+        Price Analytics
+
+    </a>
+
+
+    <!-- Alerts -->
+
+    <a
+        href="{{ url_for('alerts') }}"
+        class="sidebar-link"
+    >
+
+        <div class="sidebar-icon">
+            !
+        </div>
+
+        Alerts
+
+    </a>
+
+
+    <!-- Watchlist -->
+
+    <a
+        href="{{ url_for('watchlist') }}"
+        class="sidebar-link active"
+    >
+
+        <div class="sidebar-icon">
+            W
+        </div>
+
+        Watchlist
+
+    </a>
+
+
+    <div class="sidebar-divider"></div>
+
+
+    <div class="sidebar-section-title">
+        ACCOUNT
+    </div>
+
+
+    <!-- Settings -->
+
+    <a href="{{ url_for('settings') }}"
+   class="sidebar-link">
+
+    <div class="sidebar-icon">
+        S
+    </div>
+
+    Settings
+
+    </a>
+
+
+    <!-- Profile -->
+
+    <a href="{{ url_for('profile') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            U
+        </div>
+
+         Profile
+
+    </a>
+
+    <!-- Logout -->
+
+    <a
+        href="{{ url_for('logout') }}"
+        class="sidebar-link"
+    >
+
+        <div class="sidebar-icon">
+            L
+        </div>
+
+        Logout
+
+    </a>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="watchlist-main">
+
+
+    <!-- TOP BAR -->
+
+    <div class="watchlist-topbar">
+
+        <div>
+
+            <h1 class="watchlist-title">
+                Watchlist
+            </h1>
+
+            <p class="watchlist-subtitle">
+                Keep track of all your monitored products in one place.
+            </p>
+
+        </div>
+
+
+        <div class="profile-button">
+
+            <span class="profile-avatar">
+                {{ user_name[0]|upper }}
+            </span>
+
+            {{ user_name }}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         STATISTICS
+    ================================================= -->
+
+    <section class="watchlist-stats">
+
+
+        <!-- TRACKED PRODUCTS -->
+
+        <div class="watchlist-stat">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    P
+                </div>
+
+                <div class="stat-trend">
+                    Live
+                </div>
+
+            </div>
+
+            <div class="stat-label">
+                Tracked Products
+            </div>
+
+            <div class="stat-value">
+                {{ products|length }}
+            </div>
+
+        </div>
+
+
+
+        <!-- TARGET REACHED -->
+
+        <div class="watchlist-stat">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    ↓
+                </div>
+
+                <div class="stat-trend">
+                    Live
+                </div>
+
+            </div>
+
+            <div class="stat-label">
+                Target Price Reached
+            </div>
+
+
+            <div class="stat-value">
+
+                {% set reached = namespace(count=0) %}
+
+
+                {% for product in products %}
+
+                    {% if product.current_price is not none
+                          and product.target_price is not none
+                          and product.current_price|float
+                              <= product.target_price|float %}
+
+                        {% set reached.count =
+                            reached.count + 1 %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+                {{ reached.count }}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MONITORING -->
+
+        <div class="watchlist-stat">
+
+            <div class="stat-top">
+
+                <div class="stat-icon">
+                    !
+                </div>
+
+                <div class="stat-trend">
+                    Active
+                </div>
+
+            </div>
+
+            <div class="stat-label">
+                Monitoring Status
+            </div>
+
+            <div class="stat-value">
+                Active
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         WATCHLIST
+    ================================================= -->
+
+    <section class="watchlist-card">
+
+
+        <div class="card-header">
+
+            <h3>
+                My Watchlist
+            </h3>
+
+            <span>
+                {{ products|length }} product(s)
+            </span>
+
+        </div>
+
+
+
+        {% if products %}
+
+
+        <div class="watchlist-grid">
+
+
+            {% for product in products %}
+
+
+            <div class="product-card">
+
+
+                <!-- PRODUCT IMAGE -->
+
+                <div class="product-image-wrapper">
+
+                    {% if product.product_image %}
+
+                        <img
+                            src="{{ product.product_image }}"
+                            alt="Product"
+                            class="product-image"
+                        >
+
+                    {% else %}
+
+                        <div class="no-image">
+                            No Image Available
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- PRODUCT CONTENT -->
+
+                <div class="product-content">
+
+
+                    <!-- PRODUCT NAME -->
+
+                    <div class="product-name">
+
+                        {{ product.product_name or "Unknown Product" }}
+
+                    </div>
+
+
+
+                    <!-- PRICE -->
+
+                    <div class="price-section">
+
+
+                        <div class="price-box">
+
+                            <div class="price-label">
+                                Current Price
+                            </div>
+
+                            <div class="current-price">
+
+                                ₹{{ "{:,.2f}".format(
+                                    product.current_price|float
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="price-box">
+
+                            <div class="price-label">
+                                Target Price
+                            </div>
+
+                            <div class="target-price">
+
+                                ₹{{ "{:,.2f}".format(
+                                    product.target_price|float
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- PRICE INFORMATION -->
+
+                    <div class="price-info">
+
+
+                        <div class="info-box">
+
+                            <div class="info-title">
+                                Lowest
+                            </div>
+
+                            <div class="info-value">
+
+                                ₹{{ "{:,.2f}".format(
+                                    product.lowest_price|float
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <div class="info-title">
+                                Average
+                            </div>
+
+                            <div class="info-value">
+
+                                ₹{{ "{:,.2f}".format(
+                                    product.average_price|float
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <div class="info-title">
+                                Highest
+                            </div>
+
+                            <div class="info-value">
+
+                                ₹{{ "{:,.2f}".format(
+                                    product.highest_price|float
+                                ) }}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    {% if product.current_price is not none
+                          and product.target_price is not none
+                          and product.current_price|float
+                              <= product.target_price|float %}
+
+                        <span class="status target-reached">
+                            TARGET REACHED
+                        </span>
+
+                    {% else %}
+
+                        <span class="status monitoring">
+                            TRACKING
+                        </span>
+
+                    {% endif %}
+
+
+
+                    <!-- PRODUCT -->
+
+                    <a
+                        href="{{ product.product_url }}"
+                        target="_blank"
+                        class="view-btn"
+                    >
+                        View Product
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- EMPTY WATCHLIST -->
+
+        <div class="no-products">
+
+            <div class="empty-title">
+                Your Watchlist is Empty
+            </div>
+
+            <div class="empty-text">
+                Add a product to PriceLens to start monitoring its price.
+            </div>
+
+            <a
+                href="{{ url_for('products') }}"
+                class="add-product-btn"
+            >
+                Add Product
+            </a>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+</div>
+
+
+{% endblock %}

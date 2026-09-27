@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alerts - PriceLens</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #070914;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+
+        /* =========================================
+           TOP HEADER
+        ========================================= */
+
+        .top-header {
+            height: 65px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #303da8,
+                    #3153d5,
+                    #168fc1
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 32px;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 1000;
+        }
+
+
+        /* LOGO */
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b7cff,
+                    #00c8ff
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 23px;
+            font-weight: 900;
+
+            box-shadow:
+                0 0 18px rgba(0, 200, 255, 0.35);
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-name span {
+            color: #42cfff;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+            position: fixed;
+
+            top: 65px;
+            left: 0;
+            bottom: 0;
+
+            width: 220px;
+
+            background: #0b0d18;
+
+            border-right: 1px solid #202437;
+
+            padding: 45px 12px 25px;
+
+            z-index: 900;
+        }
+
+
+        .menu-title {
+            font-size: 10px;
+
+            color: #61709a;
+
+            font-weight: 700;
+
+            letter-spacing: 1.3px;
+
+            padding: 0 28px 12px;
+        }
+
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            width: 100%;
+
+            padding: 12px 13px;
+
+            margin-bottom: 7px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            color: #91a0c4;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: all 0.25s ease;
+        }
+
+
+        .sidebar-link:hover {
+            color: #ffffff;
+
+            background: #15192a;
+        }
+
+
+        .sidebar-link.active {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #211b58,
+                    #18244b
+                );
+
+            border: 1px solid #35306f;
+
+            box-shadow:
+                0 0 18px rgba(67, 76, 220, 0.12);
+        }
+
+
+        .sidebar-icon {
+            width: 29px;
+            height: 29px;
+
+            border-radius: 8px;
+
+            background: #15182b;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+
+            color: #9ba9ff;
+
+            flex-shrink: 0;
+        }
+
+
+        .sidebar-link.active .sidebar-icon {
+            background: #24205a;
+            color: #ffffff;
+        }
+
+
+        .divider {
+            height: 1px;
+
+            background: #202437;
+
+            margin: 25px 8px;
+        }
+
+
+        .section-title {
+            font-size: 10px;
+
+            color: #61709a;
+
+            font-weight: 700;
+
+            letter-spacing: 1.3px;
+
+            padding: 0 28px 12px;
+        }
+
+
+        /* =========================================
+           MAIN CONTENT
+        ========================================= */
+
+        .main {
+            margin-left: 220px;
+
+            padding: 105px 42px 50px;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================
+           PAGE HEADER
+        ========================================= */
+
+        .page-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .page-title h1 {
+            font-size: 29px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .page-title p {
+            color: #66759e;
+
+            font-size: 13px;
+        }
+
+
+        .user-box {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 9px 15px;
+
+            border: 1px solid #22263a;
+
+            background: #0d101d;
+
+            border-radius: 10px;
+
+            color: #b9c3df;
+
+            font-size: 13px;
+        }
+
+
+        .user-icon {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 8px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6249e8,
+                    #4268ff
+                );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           SUMMARY CARDS
+        ========================================= */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+        }
+
+
+        .summary-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    #0e111d,
+                    #0b0d17
+                );
+
+            border: 1px solid #202438;
+
+            border-radius: 15px;
+
+            padding: 22px;
+
+            min-height: 125px;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .summary-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -35px;
+            top: -35px;
+
+            border-radius: 50%;
+
+            background: rgba(72, 88, 255, 0.07);
+        }
+
+
+        .summary-label {
+            color: #6680a8;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.4px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 13px;
+        }
+
+
+        .summary-value {
+            font-size: 29px;
+
+            font-weight: 800;
+
+            color: #ffffff;
+        }
+
+
+        .summary-value.blue {
+            color: #4bd5ff;
+        }
+
+
+        .summary-value.green {
+            color: #42e58b;
+        }
+
+
+        .summary-value.purple {
+            color: #a79cff;
+        }
+
+
+        /* =========================================
+           ALERT PANEL
+        ========================================= */
+
+        .alerts-panel {
+            background:
+                linear-gradient(
+                    145deg,
+                    #0d101b,
+                    #0a0c15
+                );
+
+            border: 1px solid #202438;
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,0.16);
+        }
+
+
+        .panel-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .panel-header h2 {
+            font-size: 17px;
+
+            font-weight: 800;
+        }
+
+
+        .panel-header span {
+            color: #61709a;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================
+           ALERT CARD
+        ========================================= */
+
+        .alert-card {
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding: 17px;
+
+            margin-bottom: 12px;
+
+            background: #0b0e19;
+
+            border: 1px solid #20263b;
+
+            border-radius: 12px;
+
+            transition: all 0.25s ease;
+        }
+
+
+        .alert-card:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .alert-card:hover {
+            border-color: #343d63;
+
+            background: #0f1220;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.18);
+        }
+
+
+        /* PRODUCT IMAGE */
+
+        .product-image {
+            width: 68px;
+            height: 68px;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            object-fit: contain;
+
+            background: #ffffff;
+
+            padding: 4px;
+
+            border: 1px solid #2a3046;
+        }
+
+
+        .image-placeholder {
+            width: 68px;
+            height: 68px;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background: #15182a;
+
+            border: 1px solid #252b42;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #65729b;
+
+            font-size: 24px;
+
+            font-weight: 700;
+        }
+
+
+        /* ALERT INFORMATION */
+
+        .alert-info {
+            flex: 1;
+
+            min-width: 0;
+        }
+
+
+        .product-name {
+            color: #f3f5ff;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            line-height: 1.4;
+
+            margin-bottom: 9px;
+
+            max-width: 680px;
+        }
+
+
+        .price-row {
+            display: flex;
+
+            align-items: center;
+
+            gap: 22px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .current-price {
+            color: #42e58b;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .target-price {
+            color: #7e8bab;
+
+            font-size: 13px;
+        }
+
+
+        .target-price strong {
+            color: #aeb8d3;
+
+            font-weight: 600;
+        }
+
+
+        .alert-time {
+            margin-top: 7px;
+
+            color: #566482;
+
+            font-size: 11px;
+        }
+
+
+        /* STATUS */
+
+        .status {
+            flex-shrink: 0;
+
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+            background: rgba(40, 225, 128, 0.10);
+
+            border: 1px solid rgba(40, 225, 128, 0.18);
+
+            color: #42e58b;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        /* VIEW BUTTON */
+
+        .view-btn {
+            flex-shrink: 0;
+
+            text-decoration: none;
+
+            padding: 9px 13px;
+
+            border-radius: 8px;
+
+            background: #111a35;
+
+            border: 1px solid #26345f;
+
+            color: #65a8ff;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition: 0.25s;
+        }
+
+
+        .view-btn:hover {
+            background: #182650;
+
+            border-color: #3d5ca3;
+
+            color: #ffffff;
+        }
+
+
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 65px 20px;
+
+            color: #627093;
+        }
+
+
+        .empty-icon {
+            width: 55px;
+            height: 55px;
+
+            margin: 0 auto 16px;
+
+            border-radius: 15px;
+
+            background: #14182a;
+
+            border: 1px solid #252b43;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 20px;
+
+            color: #7380a5;
+        }
+
+
+        .empty-state h3 {
+            color: #dce2f5;
+
+            font-size: 16px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .empty-state p {
+            font-size: 12px;
+
+            color: #596782;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 1000px) {
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .alert-card {
+                align-items: flex-start;
+
+                flex-wrap: wrap;
+            }
+
+            .alert-info {
+                min-width: 60%;
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .top-header {
+                padding: 0 18px;
+            }
+
+            .tagline {
+                display: none;
+            }
+
+            .sidebar {
+                width: 75px;
+
+                padding: 30px 8px;
+            }
+
+            .menu-title,
+            .section-title {
+                display: none;
+            }
+
+            .sidebar-link {
+                justify-content: center;
+
+                padding: 11px;
+            }
+
+            .sidebar-link span {
+                display: none;
+            }
+
+            .sidebar-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .main {
+                margin-left: 75px;
+
+                padding: 95px 18px 35px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+            .alert-card {
+                flex-direction: column;
+            }
+
+            .alert-info {
+                width: 100%;
+            }
+
+            .status,
+            .view-btn {
+                align-self: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         TOP HEADER
+    ========================================= -->
+
+    <header class="top-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                P
+            </div>
+
+            <div class="brand-name">
+                Price<span>Lens</span>
+            </div>
+
+        </div>
+
+
+        <div class="tagline">
+            Cloud-Based E-Commerce Price Monitoring & Alert System
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================= -->
+
+    <aside class="sidebar">
+
+
+        <div class="menu-title">
+            MAIN MENU
+        </div>
+
+
+        <a href="{{ url_for('dashboard') }}"
+           class="sidebar-link">
+
+            <div class="sidebar-icon">
+                D
+            </div>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('products') }}"
+           class="sidebar-link">
+
+            <div class="sidebar-icon">
+                P
+            </div>
+
+            <span>
+                Products
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('price_analytics') }}"
+           class="sidebar-link">
+
+            <div class="sidebar-icon">
+                A
+            </div>
+
+            <span>
+                Price Analytics
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('alerts') }}"
+           class="sidebar-link active">
+
+            <div class="sidebar-icon">
+                !
+            </div>
+
+            <span>
+                Alerts
+            </span>
+
+        </a>
+
+
+        <a href="{{ url_for('watchlist') }}"
+           class="sidebar-link">
+
+        <div class="sidebar-icon">W</div>
+    Watchlist
+
+      </a>
+
+
+        <div class="divider"></div>
+
+
+        <div class="section-title">
+            ACCOUNT
+        </div>
+
+
+        <!-- Settings -->
+<a href="{{ url_for('settings') }}" class="sidebar-link">
+    <div class="sidebar-icon">S</div>
+    Settings
+</a>
+
+
+        <!-- Profile -->
+<a href="{{ url_for('profile') }}" class="sidebar-link">
+    <div class="sidebar-icon">U</div>
+    Profile
+</a>
+
+
+        </a>
+
+
+        <a href="{{ url_for('logout') }}"
+           class="sidebar-link">
+
+            <div class="sidebar-icon">
+                L
+            </div>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================= -->
+
+    <main class="main">
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+
+            <div class="page-title">
+
+                <h1>
+                    Price Alerts
+                </h1>
+
+                <p>
+                    Monitor products that have reached your target price.
+                </p>
+
+            </div>
+
+
+            <div class="user-box">
+
+                <div class="user-icon">
+                    U
+                </div>
+
+                {{ user_name }}
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             SUMMARY
+        ===================================== -->
+
+        <div class="summary-grid">
+
+
+            <!-- TOTAL ALERTS -->
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    TOTAL ALERTS
+                </div>
+
+                <div class="summary-value blue">
+                    {{ alerts|length }}
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCTS ALERTED -->
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    PRODUCTS ALERTED
+                </div>
+
+                <div class="summary-value green">
+
+                    {{ alerts|map(attribute='product_id')|unique|list|length }}
+
+                </div>
+
+            </div>
+
+
+            <!-- LATEST ALERT -->
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    LATEST ALERT
+                </div>
+
+                <div class="summary-value purple">
+
+                    {% if alerts %}
+                        01
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+             ALERTS PANEL
+        ===================================== -->
+
+        <div class="alerts-panel">
+
+
+            <div class="panel-header">
+
+                <h2>
+                    Recent Alerts
+                </h2>
+
+                <span>
+                    Target price notifications
+                </span>
+
+            </div>
+
+
+
+            {% if alerts %}
+
+
+                {% for alert in alerts %}
+
+
+                <div class="alert-card">
+
+
+                    <!-- PRODUCT IMAGE -->
+
+                    {% if alert.product_image %}
+
+                        <img
+                            src="{{ alert.product_image }}"
+                            class="product-image"
+                            alt="Product Image"
+                        >
+
+                    {% else %}
+
+                        <div class="image-placeholder">
+                            P
+                        </div>
+
+                    {% endif %}
+
+
+
+                    <!-- ALERT INFORMATION -->
+
+                    <div class="alert-info">
+
+
+                        <div class="product-name">
+
+                            {{ alert.product_name }}
+
+                        </div>
+
+
+                        <div class="price-row">
+
+
+                            <span class="current-price">
+
+                                Current:
+                                ₹{{ "{:,.2f}".format(alert.current_price or 0) }}
+
+                            </span>
+
+
+                            <span class="target-price">
+
+                                Target:
+                                <strong>
+                                    ₹{{ "{:,.2f}".format(alert.target_price or 0) }}
+                                </strong>
+
+                            </span>
+
+
+                        </div>
+
+
+                        <div class="alert-time">
+
+                            Alert sent:
+                            {{ alert.sent_at }}
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="status">
+
+                        TARGET REACHED
+
+                    </div>
+
+
+
+                    <!-- PRODUCT LINK -->
+
+                    {% if alert.product_url %}
+
+                        <a
+                            href="{{ alert.product_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="view-btn"
+                        >
+
+                            View Product
+
+                        </a>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <!-- EMPTY STATE -->
+
+                <div class="empty-state">
+
+
+                    <div class="empty-icon">
+                        !
+                    </div>
+
+
+                    <h3>
+                        No Alerts Yet
+                    </h3>
+
+
+                    <p>
+                        You will see price alerts here when a tracked
+                        product reaches your target price.
+                    </p>
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html> 

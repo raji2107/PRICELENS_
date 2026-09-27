@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -11,6 +10,10 @@
 
 <title>Register | PriceLens</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 
 * {
@@ -19,10 +22,32 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: #070914;
+}
+
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
     background: #070914;
     color: white;
+}
+
+h1, h2, h3 {
+    font-family: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 11px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0d1c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #7c3aed, #1d4ed8);
+    border-radius: 20px;
+    border: 2px solid #0a0d1c;
 }
 
 
@@ -54,12 +79,12 @@ body {
         ),
         radial-gradient(
             circle at 90% 15%,
-            rgba(6, 182, 212, .28),
+            rgba(29, 78, 216, .28),
             transparent 30%
         ),
         radial-gradient(
             circle at 80% 90%,
-            rgba(236, 72, 153, .22),
+            rgba(109, 40, 217, .22),
             transparent 30%
         ),
         #070914;
@@ -115,6 +140,8 @@ body {
     pointer-events: none;
 
     filter: blur(8px);
+
+    animation: orbFloat 10s ease-in-out infinite;
 }
 
 .orb-1 {
@@ -133,10 +160,35 @@ body {
     width: 250px;
     height: 250px;
 
-    background: rgba(6,182,212,.20);
+    background: rgba(29,78,216,.20);
 
     right: -100px;
     bottom: -80px;
+
+    animation-duration: 13s;
+    animation-direction: reverse;
+}
+
+.orb-3 {
+
+    width: 130px;
+    height: 130px;
+
+    background: rgba(109,40,217,.22);
+
+    right: 22%;
+    top: 6%;
+
+    animation-duration: 8s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(18px, -18px) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orb { animation: none; }
 }
 
 
@@ -198,7 +250,7 @@ body {
             145deg,
             rgba(124,58,237,.16),
             rgba(37,99,235,.08),
-            rgba(6,182,212,.08)
+            rgba(29,78,216,.08)
         );
 }
 
@@ -243,17 +295,25 @@ body {
             135deg,
             #8b5cf6,
             #2563eb,
-            #06b6d4
+            #1d4ed8
         );
 
     box-shadow:
         0 0 25px
         rgba(99,102,241,.5);
+
+    transition: transform .35s cubic-bezier(.2,.8,.3,1.2), box-shadow .35s ease;
+}
+
+.brand:hover .brand-mark {
+    transform: rotate(-10deg) scale(1.12);
+
+    box-shadow: 0 0 36px rgba(147,197,253,.7);
 }
 
 .brand span {
 
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -284,15 +344,25 @@ body {
             90deg,
             #a78bfa,
             #60a5fa,
-            #67e8f9,
-            #f0abfc
+            #93c5fd,
+            #c4b5fd,
+            #a78bfa
         );
+
+    background-size: 300% auto;
 
     -webkit-background-clip: text;
 
     background-clip: text;
 
     color: transparent;
+
+    animation: registerGradientShift 6s linear infinite;
+}
+
+@keyframes registerGradientShift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
 }
 
 .visual-content p {
@@ -338,6 +408,18 @@ body {
     border:
         1px solid
         rgba(255,255,255,.08);
+
+    transition: .3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(139,92,246,.35);
+
+    background: rgba(139,92,246,.08);
+
+    box-shadow: 0 12px 26px rgba(0,0,0,.25);
 }
 
 .feature-title {
@@ -347,6 +429,25 @@ body {
     font-size: 11px;
 
     font-weight: 800;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.feature-title::before {
+    content: "";
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #a78bfa, #3b82f6);
+
+    box-shadow: 0 0 8px rgba(139,92,246,.7);
+
+    flex-shrink: 0;
 }
 
 .feature-text {
@@ -514,7 +615,58 @@ body {
 
 .eye-btn:hover {
 
-    color: #67e8f9;
+    color: #93c5fd;
+}
+
+
+/* =========================
+   PASSWORD STRENGTH METER
+   (extra feature, purely visual —
+   reads output of existing checkPassword())
+========================= */
+
+.password-strength {
+
+    margin-top: 8px;
+
+    margin-bottom: 14px;
+}
+
+.password-strength-bar {
+
+    width: 100%;
+    height: 5px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.08);
+
+    overflow: hidden;
+}
+
+.password-strength-fill {
+
+    height: 100%;
+    width: 0%;
+
+    border-radius: 10px;
+
+    background: linear-gradient(90deg, #f87171, #f87171);
+
+    transition: width .35s ease, background .35s ease;
+}
+
+.password-strength-label {
+
+    margin-top: 6px;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: .4px;
+
+    color: #64748b;
 }
 
 
@@ -668,23 +820,56 @@ body {
             #7c3aed,
             #4f46e5,
             #2563eb,
-            #0891b2
+            #1e3a8a
         );
+
+    background-size: 220% auto;
 
     box-shadow:
         0 12px 30px
         rgba(79,70,229,.25);
 
     transition: .3s;
+
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.register-btn::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            115deg,
+            transparent 20%,
+            rgba(255,255,255,.35) 45%,
+            transparent 70%
+        );
+
+    transform: translateX(-120%);
+
+    z-index: -1;
+}
+
+.register-btn:hover::before {
+    transform: translateX(120%);
+    transition: transform .7s ease;
 }
 
 .register-btn:hover {
 
     transform: translateY(-2px);
 
+    background-position: 100% 0;
+
     box-shadow:
-        0 18px 40px
-        rgba(79,70,229,.4);
+        0 18px 44px
+        rgba(79,70,229,.5),
+        0 0 24px rgba(139,92,246,.3);
 }
 
 
@@ -714,7 +899,7 @@ body {
 
 .login-text a:hover {
 
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -795,6 +980,8 @@ body {
     <div class="orb orb-1"></div>
 
     <div class="orb orb-2"></div>
+
+    <div class="orb orb-3"></div>
 
 
     <div class="register-container">
@@ -1006,6 +1193,21 @@ body {
 
                         </div>
 
+
+                    </div>
+
+
+                    <!-- PASSWORD STRENGTH (extra feature) -->
+
+                    <div class="password-strength">
+
+                        <div class="password-strength-bar">
+                            <div class="password-strength-fill" id="strengthFill"></div>
+                        </div>
+
+                        <div class="password-strength-label" id="strengthLabel">
+                            Password strength
+                        </div>
 
                     </div>
 
@@ -1291,6 +1493,36 @@ function checkPassword() {
     }
 
 
+    /* Strength meter (extra feature, additive only) */
+
+    const strengthFill = document.getElementById("strengthFill");
+    const strengthLabel = document.getElementById("strengthLabel");
+
+    if (strengthFill && strengthLabel) {
+
+        let score = 0;
+
+        if (password.length >= 6) score++;
+        if (/[A-Za-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+
+        const levels = [
+            { width: "0%",   color: "linear-gradient(90deg, #f87171, #f87171)", label: "Password strength" },
+            { width: "25%",  color: "linear-gradient(90deg, #f87171, #fb923c)", label: "Weak" },
+            { width: "50%",  color: "linear-gradient(90deg, #fb923c, #facc15)", label: "Fair" },
+            { width: "75%",  color: "linear-gradient(90deg, #facc15, #4ade80)", label: "Good" },
+            { width: "100%", color: "linear-gradient(90deg, #4ade80, #3b82f6)", label: "Strong" }
+        ];
+
+        const level = password.length === 0 ? levels[0] : levels[score];
+
+        strengthFill.style.width = level.width;
+        strengthFill.style.background = level.color;
+        strengthLabel.textContent = level.label;
+
+    }
+
     checkConfirmPassword();
 
 }
@@ -1415,4 +1647,3 @@ function validatePassword() {
 </body>
 
 </html>
-

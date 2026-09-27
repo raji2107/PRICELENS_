@@ -45,6 +45,7 @@
 .sidebar-link:hover {
     color: white;
     background: rgba(99,102,241,.10);
+    text-decoration: none;
 }
 
 .sidebar-link.active {
@@ -384,6 +385,11 @@
     font-weight: 800;
 }
 
+.price-rise {
+    color: #f87171;
+    font-weight: 800;
+}
+
 .tracking-badge {
     display: inline-block;
     padding: 5px 9px;
@@ -394,7 +400,25 @@
     font-weight: 800;
 }
 
+.target-badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: rgba(34,211,238,.08);
+    color: #22d3ee;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.no-products {
+    padding: 35px 15px;
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+}
+
 @media (max-width:1100px) {
+
     .dashboard-stats {
         grid-template-columns: repeat(2,1fr);
     }
@@ -405,6 +429,7 @@
 }
 
 @media (max-width:800px) {
+
     .dashboard-page {
         display: block;
     }
@@ -435,6 +460,7 @@
 }
 
 @media (max-width:600px) {
+
     .dashboard-stats {
         grid-template-columns: 1fr;
     }
@@ -458,102 +484,206 @@
 
 </style>
 
+
 <div class="dashboard-page">
 
-```
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
 <aside class="dashboard-sidebar">
 
     <div class="sidebar-section-title">
         MAIN MENU
     </div>
 
-    <a href="/dashboard" class="sidebar-link active">
-        <div class="sidebar-icon">D</div>
+
+    <!-- Dashboard -->
+    <a href="{{ url_for('dashboard') }}"
+       class="sidebar-link active">
+
+        <div class="sidebar-icon">
+            D
+        </div>
+
         Dashboard
+
     </a>
 
-    <a href="/products" class="sidebar-link">
-        <div class="sidebar-icon">P</div>
+
+    <!-- Products -->
+    <a href="{{ url_for('products') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            P
+        </div>
+
         Products
+
     </a>
 
-    <a href="#" class="sidebar-link">
-        <div class="sidebar-icon">A</div>
+
+    <!-- Price Analytics -->
+    <a href="{{ url_for('price_analytics') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            A
+        </div>
+
         Price Analytics
+
     </a>
 
-    <a href="#" class="sidebar-link">
-        <div class="sidebar-icon">!</div>
+
+    <!-- Alerts -->
+    <a href="{{ url_for('alerts') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            !
+        </div>
+
         Alerts
+
     </a>
 
-    <a href="#" class="sidebar-link">
-        <div class="sidebar-icon">W</div>
+
+    <!-- Watchlist -->
+    <a href="{{ url_for('watchlist') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            W
+        </div>
+
         Watchlist
+
     </a>
+
 
     <div class="sidebar-divider"></div>
+
 
     <div class="sidebar-section-title">
         ACCOUNT
     </div>
 
-    <a href="#" class="sidebar-link">
-        <div class="sidebar-icon">S</div>
-        Settings
+
+    <a href="{{ url_for('settings') }}"
+   class="sidebar-link">
+
+    <div class="sidebar-icon">
+        S
+    </div>
+
+    Settings
+
     </a>
 
-    <a href="#" class="sidebar-link">
-        <div class="sidebar-icon">U</div>
-        Profile
+     <a href="{{ url_for('profile') }}"
+   class="sidebar-link">
+
+    <div class="sidebar-icon">
+        U
+    </div>
+
+    Profile
+
     </a>
 
-    <a href="/logout" class="sidebar-link">
-        <div class="sidebar-icon">L</div>
+    <!-- Logout -->
+    <a href="{{ url_for('logout') }}"
+       class="sidebar-link">
+
+        <div class="sidebar-icon">
+            L
+        </div>
+
         Logout
+
     </a>
 
 </aside>
 
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
 <main class="dashboard-main">
+
+
+    <!-- TOP BAR -->
 
     <div class="dashboard-topbar">
 
         <div>
+
             <h1 class="welcome-title">
-                Welcome back, {{ user_name }} 
+                Welcome back, {{ user_name }}
             </h1>
 
             <p class="welcome-subtitle">
                 Here's what's happening with your tracked products.
             </p>
+
         </div>
+
 
         <div class="dashboard-actions">
 
             <button class="notification-button">
+
                 N
-                <span class="notification-dot"></span>
+
+                {% if active_alerts > 0 %}
+
+                    <span class="notification-dot"></span>
+
+                {% endif %}
+
             </button>
 
+
             <div class="profile-button">
+
                 <span class="profile-avatar">
                     {{ user_name[0]|upper }}
                 </span>
+
                 {{ user_name }}
+
             </div>
 
         </div>
 
     </div>
 
+
+    <!-- =================================================
+         REAL DASHBOARD STATISTICS
+    ================================================= -->
+
     <section class="dashboard-stats">
+
+
+        <!-- TRACKED PRODUCTS -->
 
         <div class="dashboard-stat">
 
             <div class="stat-top">
-                <div class="stat-icon">P</div>
-                <div class="stat-trend">+12%</div>
+
+                <div class="stat-icon">
+                    P
+                </div>
+
+                <div class="stat-trend">
+                    Live
+                </div>
+
             </div>
 
             <div class="dashboard-stat-label">
@@ -561,16 +691,26 @@
             </div>
 
             <div class="dashboard-stat-value">
-                12
+                {{ total_products }}
             </div>
 
         </div>
 
+
+        <!-- PRICE DROPS -->
+
         <div class="dashboard-stat">
 
             <div class="stat-top">
-                <div class="stat-icon">↓</div>
-                <div class="stat-trend">+4</div>
+
+                <div class="stat-icon">
+                    ↓
+                </div>
+
+                <div class="stat-trend">
+                    Live
+                </div>
+
             </div>
 
             <div class="dashboard-stat-label">
@@ -578,16 +718,26 @@
             </div>
 
             <div class="dashboard-stat-value">
-                04
+                {{ price_drops }}
             </div>
 
         </div>
 
+
+        <!-- AVERAGE SAVINGS -->
+
         <div class="dashboard-stat">
 
             <div class="stat-top">
-                <div class="stat-icon">₹</div>
-                <div class="stat-trend">+8.5%</div>
+
+                <div class="stat-icon">
+                    ₹
+                </div>
+
+                <div class="stat-trend">
+                    Calculated
+                </div>
+
             </div>
 
             <div class="dashboard-stat-label">
@@ -595,16 +745,26 @@
             </div>
 
             <div class="dashboard-stat-value">
-                ₹4,250
+                ₹{{ "{:,.2f}".format(average_savings|float) }}
             </div>
 
         </div>
 
+
+        <!-- ACTIVE ALERTS -->
+
         <div class="dashboard-stat">
 
             <div class="stat-top">
-                <div class="stat-icon">!</div>
-                <div class="stat-trend">Active</div>
+
+                <div class="stat-icon">
+                    !
+                </div>
+
+                <div class="stat-trend">
+                    Active
+                </div>
+
             </div>
 
             <div class="dashboard-stat-label">
@@ -612,14 +772,22 @@
             </div>
 
             <div class="dashboard-stat-value">
-                07
+                {{ active_alerts }}
             </div>
 
         </div>
 
     </section>
 
+
+    <!-- =================================================
+         PRICE ANALYTICS + SMART INSIGHTS
+    ================================================= -->
+
     <section class="dashboard-grid">
+
+
+        <!-- PRICE ANALYTICS -->
 
         <div class="dashboard-card">
 
@@ -634,6 +802,7 @@
                 </span>
 
             </div>
+
 
             <div class="analytics-chart">
 
@@ -670,10 +839,12 @@
 
                     </defs>
 
+
                     <path
                         class="analytics-area"
                         d="M0,190 C60,180 90,145 140,160 C190,175 220,125 270,135 C320,145 350,95 400,115 C450,135 480,80 530,92 C580,104 620,55 700,65 L700,260 L0,260 Z"
                     />
+
 
                     <path
                         class="analytics-line"
@@ -686,6 +857,11 @@
 
         </div>
 
+
+        <!-- =================================================
+             SMART INSIGHTS
+        ================================================= -->
+
         <div class="dashboard-card">
 
             <div class="card-header">
@@ -695,10 +871,13 @@
                 </h3>
 
                 <span>
-                    AI Powered
+                    PriceLens
                 </span>
 
             </div>
+
+
+            <!-- PRICE TREND -->
 
             <div class="insight">
 
@@ -706,15 +885,33 @@
                     PRICE TREND
                 </div>
 
-                <div class="insight-value positive">
-                    Falling
-                </div>
 
-                <div class="insight-description">
-                    Current prices are trending lower than the previous 7 days.
-                </div>
+                {% if price_drops > 0 %}
+
+                    <div class="insight-value positive">
+                        Falling
+                    </div>
+
+                    <div class="insight-description">
+                        Some of your tracked products are currently below their highest recorded price.
+                    </div>
+
+                {% else %}
+
+                    <div class="insight-value cyan">
+                        Stable
+                    </div>
+
+                    <div class="insight-description">
+                        No tracked product currently shows a price drop from its highest recorded price.
+                    </div>
+
+                {% endif %}
 
             </div>
+
+
+            <!-- BEST DEAL -->
 
             <div class="insight">
 
@@ -722,15 +919,33 @@
                     BEST DEAL
                 </div>
 
-                <div class="insight-value cyan">
-                    12.5% Below Average
-                </div>
 
-                <div class="insight-description">
-                    One of your tracked products is currently at a strong deal price.
-                </div>
+                {% if price_drops > 0 %}
+
+                    <div class="insight-value cyan">
+                        Price Drop Detected
+                    </div>
+
+                    <div class="insight-description">
+                        One or more tracked products are available below their previous highest recorded price.
+                    </div>
+
+                {% else %}
+
+                    <div class="insight-value purple">
+                        Monitoring
+                    </div>
+
+                    <div class="insight-description">
+                        PriceLens is continuing to monitor your tracked products.
+                    </div>
+
+                {% endif %}
 
             </div>
+
+
+            <!-- BUY SIGNAL -->
 
             <div class="insight">
 
@@ -738,13 +953,28 @@
                     BUY SIGNAL
                 </div>
 
-                <div class="insight-value purple">
-                    High Confidence
-                </div>
 
-                <div class="insight-description">
-                    Current market conditions suggest this may be a good time to buy.
-                </div>
+                {% if active_alerts > 0 %}
+
+                    <div class="insight-value positive">
+                        Target Reached
+                    </div>
+
+                    <div class="insight-description">
+                        At least one product has reached or gone below your target price.
+                    </div>
+
+                {% else %}
+
+                    <div class="insight-value purple">
+                        Monitoring
+                    </div>
+
+                    <div class="insight-description">
+                        No tracked product has reached its target price yet.
+                    </div>
+
+                {% endif %}
 
             </div>
 
@@ -752,7 +982,13 @@
 
     </section>
 
+
+    <!-- =================================================
+         RECENT PRODUCTS
+    ================================================= -->
+
     <section class="dashboard-card products-card">
+
 
         <div class="card-header">
 
@@ -760,14 +996,23 @@
                 Recently Tracked Products
             </h3>
 
+
             <a
-                href="/products"
-                style="color:#64748b;text-decoration:none;font-size:10px;"
+                href="{{ url_for('products') }}"
+                style="
+                    color:#64748b;
+                    text-decoration:none;
+                    font-size:10px;
+                "
             >
                 View All →
             </a>
 
         </div>
+
+
+        {% if recent_products %}
+
 
         <table class="product-table">
 
@@ -775,171 +1020,247 @@
 
                 <tr>
 
-                    <th>Product</th>
-                    <th>Current Price</th>
-                    <th>Target Price</th>
-                    <th>Change</th>
-                    <th>Status</th>
+                    <th>
+                        Product
+                    </th>
+
+                    <th>
+                        Current Price
+                    </th>
+
+                    <th>
+                        Target Price
+                    </th>
+
+                    <th>
+                        Change
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
 
                 </tr>
 
             </thead>
 
+
             <tbody>
 
+
+            {% for product in recent_products %}
+
+
                 <tr>
+
+
+                    <!-- PRODUCT -->
 
                     <td>
 
                         <div class="table-product">
 
+
                             <div class="table-product-icon">
-                                L
+
+                                {% if product.product_name %}
+
+                                    {{ product.product_name[:1]|upper }}
+
+                                {% else %}
+
+                                    P
+
+                                {% endif %}
+
                             </div>
+
 
                             <div>
 
                                 <div class="table-product-name">
-                                    Premium Laptop
+
+                                    {{ product.product_name or "Unknown Product" }}
+
                                 </div>
 
+
                                 <div class="table-product-category">
-                                    Electronics
+
+                                    E-Commerce Product
+
                                 </div>
 
                             </div>
+
 
                         </div>
 
                     </td>
 
+
+                    <!-- CURRENT PRICE -->
+
                     <td class="price-current">
-                        ₹55,999
+
+                        {% if product.current_price is not none %}
+
+                            ₹{{ "{:,.2f}".format(
+                                product.current_price|float
+                            ) }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
                     </td>
+
+
+                    <!-- TARGET PRICE -->
 
                     <td class="price-target">
-                        ₹49,999
+
+                        {% if product.target_price is not none %}
+
+                            ₹{{ "{:,.2f}".format(
+                                product.target_price|float
+                            ) }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
                     </td>
 
-                    <td class="price-drop">
-                        ↓ 8.4%
-                    </td>
+
+                    <!-- PRICE CHANGE -->
 
                     <td>
 
-                        <span class="tracking-badge">
-                            TRACKING
-                        </span>
+
+                        {% if product.current_price is not none
+                              and product.highest_price is not none %}
+
+
+                            {% set current =
+                                product.current_price|float %}
+
+                            {% set highest =
+                                product.highest_price|float %}
+
+
+                            {% if highest > 0 and current < highest %}
+
+
+                                {% set drop =
+                                    ((highest - current) / highest) * 100 %}
+
+
+                                <span class="price-drop">
+
+                                    ↓ {{ "{:.1f}".format(drop) }}%
+
+                                </span>
+
+
+                            {% elif highest > 0 and current > highest %}
+
+
+                                <span class="price-rise">
+
+                                    ↑ {{ "{:.1f}".format(
+                                        ((current - highest) / highest) * 100
+                                    ) }}%
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+
+                        {% else %}
+
+                            <span style="color:#64748b;">
+                                —
+                            </span>
+
+                        {% endif %}
+
 
                     </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+
+                        {% if product.current_price is not none
+                              and product.target_price is not none
+                              and product.current_price|float
+                              <= product.target_price|float %}
+
+
+                            <span class="target-badge">
+                                TARGET REACHED
+                            </span>
+
+
+                        {% else %}
+
+
+                            <span class="tracking-badge">
+                                TRACKING
+                            </span>
+
+
+                        {% endif %}
+
+
+                    </td>
+
 
                 </tr>
 
-                <tr>
 
-                    <td>
+            {% endfor %}
 
-                        <div class="table-product">
-
-                            <div class="table-product-icon">
-                                P
-                            </div>
-
-                            <div>
-
-                                <div class="table-product-name">
-                                    Wireless Headphones
-                                </div>
-
-                                <div class="table-product-category">
-                                    Electronics
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                    <td class="price-current">
-                        ₹4,299
-                    </td>
-
-                    <td class="price-target">
-                        ₹3,999
-                    </td>
-
-                    <td class="price-drop">
-                        ↓ 5.2%
-                    </td>
-
-                    <td>
-
-                        <span class="tracking-badge">
-                            TRACKING
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-
-                        <div class="table-product">
-
-                            <div class="table-product-icon">
-                                S
-                            </div>
-
-                            <div>
-
-                                <div class="table-product-name">
-                                    Smart Watch
-                                </div>
-
-                                <div class="table-product-category">
-                                    Wearables
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                    <td class="price-current">
-                        ₹7,999
-                    </td>
-
-                    <td class="price-target">
-                        ₹6,999
-                    </td>
-
-                    <td class="price-drop">
-                        ↓ 10.1%
-                    </td>
-
-                    <td>
-
-                        <span class="tracking-badge">
-                            TRACKING
-                        </span>
-
-                    </td>
-
-                </tr>
 
             </tbody>
 
         </table>
 
+
+        {% else %}
+
+
+        <div class="no-products">
+
+            No products tracked yet.
+            Add your first product from the Products page.
+
+        </div>
+
+
+        {% endif %}
+
+
     </section>
 
+
 </main>
-```
 
 </div>
+
 
 {% endblock %}

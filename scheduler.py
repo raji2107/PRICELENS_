@@ -52,6 +52,8 @@ def send_email(to_email, subject, message):
         MIMEText(message, "plain")
     )
 
+    server = None
+
     try:
 
         server = smtplib.SMTP(
@@ -73,8 +75,6 @@ def send_email(to_email, subject, message):
             msg.as_string()
         )
 
-        server.quit()
-
         return True
 
     except Exception as e:
@@ -85,6 +85,15 @@ def send_email(to_email, subject, message):
         )
 
         return False
+
+    finally:
+
+        if server:
+
+            try:
+                server.quit()
+            except Exception:
+                pass
 
 
 # =================================
@@ -109,6 +118,10 @@ def check_prices():
             dictionary=True
         )
 
+        # =================================
+        # GET ALL PRODUCTS
+        # =================================
+
         cursor.execute(
             """
             SELECT
@@ -118,6 +131,9 @@ def check_prices():
                 p.product_name,
                 p.current_price,
                 p.target_price,
+                p.highest_price,
+                p.lowest_price,
+                p.average_price,
                 u.full_name,
                 u.email
             FROM products p
@@ -133,10 +149,15 @@ def check_prices():
             len(products)
         )
 
+        # =================================
+        # CHECK EACH PRODUCT
+        # =================================
+
         for product in products:
 
             print()
             print("--------------------------------")
+
             print(
                 "Checking:",
                 product["product_name"]
@@ -147,9 +168,9 @@ def check_prices():
                 product["product_url"]
             )
 
-            # -----------------------------
-            # SCRAPE
-            # -----------------------------
+            # =================================
+            # SCRAPE PRODUCT
+            # =================================
 
             try:
 
@@ -186,12 +207,39 @@ def check_prices():
 
                 continue
 
+            # =================================
+            # CONVERT PRICE
+            # =================================
+
+            try:
+
+                new_price = float(
+                    new_price
+                )
+
+            except (TypeError, ValueError):
+
+                print(
+                    "❌ Invalid price:",
+                    new_price
+                )
+
+                continue
+
             old_price = product[
                 "current_price"
             ]
 
             target_price = product[
                 "target_price"
+            ]
+
+            highest_price = product[
+                "highest_price"
+            ]
+
+            lowest_price = product[
+                "lowest_price"
             ]
 
             print(
@@ -209,19 +257,128 @@ def check_prices():
                 target_price
             )
 
-            # -----------------------------
-            # UPDATE PRICE
-            # -----------------------------
+            # =================================
+            # PRICE CHANGE
+            # =================================
+
+            price_change = None
+            price_drop_percent = None
+
+            if old_price is not None:
+
+                old_price_float = float(
+                    old_price
+                )
+
+                price_change = (
+                    new_price -
+                    old_price_float
+                )
+
+                if old_price_float > 0:
+
+                    price_drop_percent = (
+                        (
+                            old_price_float -
+                            new_price
+                        )
+                        / old_price_float
+                    ) * 100
+
+            # =================================
+            # HIGHEST PRICE
+            # =================================
+
+            if highest_price is None:
+
+                new_highest_price = new_price
+
+            else:
+
+                new_highest_price = max(
+                    float(highest_price),
+                    new_price
+                )
+
+            # =================================
+            # LOWEST PRICE
+            # =================================
+
+            if lowest_price is None:
+
+                new_lowest_price = new_price
+
+            else:
+
+                new_lowest_price = min(
+                    float(lowest_price),
+                    new_price
+                )
+
+            # =================================
+            # SAVE PRICE HISTORY
+            # =================================
+
+            cursor.execute(
+                """
+                INSERT INTO price_history
+                (
+                    product_id,
+                    price
+                )
+                VALUES (%s, %s)
+                """,
+                (
+                    product["id"],
+                    new_price
+                )
+            )
+
+            print(
+                "✅ Price history saved"
+            )
+
+            # =================================
+            # CALCULATE AVERAGE
+            # =================================
+
+            cursor.execute(
+                """
+                SELECT
+                    AVG(price) AS average_price
+                FROM price_history
+                WHERE product_id = %s
+                """,
+                (
+                    product["id"],
+                )
+            )
+
+            average_result = cursor.fetchone()
+
+            new_average_price = (
+                average_result["average_price"]
+            )
+
+            # =================================
+            # UPDATE PRODUCTS
+            # =================================
 
             cursor.execute(
                 """
                 UPDATE products
                 SET
-                    current_price = %s
+                    current_price = %s,
+                    highest_price = %s,
+                    lowest_price = %s,
+                    average_price = %s
                 WHERE id = %s
                 """,
                 (
                     new_price,
+                    new_highest_price,
+                    new_lowest_price,
+                    new_average_price,
                     product["id"]
                 )
             )
@@ -229,23 +386,76 @@ def check_prices():
             conn.commit()
 
             print(
-                "✅ Price updated"
+                "✅ Product price updated"
             )
 
-            # -----------------------------
-            # TARGET CHECK
-            # -----------------------------
+            print(
+                "Highest Price:",
+                new_highest_price
+            )
 
-            if new_price <= target_price:
+            print(
+                "Lowest Price:",
+                new_lowest_price
+            )
+
+            print(
+                "Average Price:",
+                new_average_price
+            )
+
+            # =================================
+            # SHOW PRICE CHANGE
+            # =================================
+
+            if price_change is not None:
+
+                if price_change < 0:
+
+                    print(
+                        f"📉 Price dropped by "
+                        f"₹{abs(price_change):,.2f}"
+                    )
+
+                    if price_drop_percent is not None:
+
+                        print(
+                            f"📉 Drop percentage: "
+                            f"{price_drop_percent:.2f}%"
+                        )
+
+                elif price_change > 0:
+
+                    print(
+                        f"📈 Price increased by "
+                        f"₹{price_change:,.2f}"
+                    )
+
+                else:
+
+                    print(
+                        "➡️ Price unchanged"
+                    )
+
+            # =================================
+            # TARGET PRICE CHECK
+            # =================================
+
+            if (
+                target_price is not None
+                and new_price <= float(
+                    target_price
+                )
+            ):
 
                 print()
                 print(
                     "🎯 TARGET PRICE REACHED!"
                 )
 
-                # -----------------------------
-                # DUPLICATE ALERT CHECK
-                # -----------------------------
+                # =================================
+                # CHECK DUPLICATE ALERT
+                # =================================
 
                 cursor.execute(
                     """
@@ -273,9 +483,9 @@ def check_prices():
 
                 else:
 
-                    # -------------------------
-                    # EMAIL ALERT
-                    # -------------------------
+                    # =================================
+                    # SEND ALERT EMAIL
+                    # =================================
 
                     alert_subject = (
                         "🎯 PriceLens - "
@@ -296,7 +506,7 @@ Current Price:
 ₹{new_price:,.2f}
 
 Target Price:
-₹{target_price:,.2f}
+₹{float(target_price):,.2f}
 
 🔥 The current price is now at or below your target price.
 
@@ -371,9 +581,11 @@ PriceLens Team
     finally:
 
         if cursor:
+
             cursor.close()
 
         if conn:
+
             conn.close()
 
 
@@ -388,8 +600,7 @@ if __name__ == "__main__":
     scheduler.add_job(
         check_prices,
         "interval",
-        hours=1,
-        next_run_time=None
+        hours=1
     )
 
     scheduler.start()
@@ -403,6 +614,9 @@ if __name__ == "__main__":
     print("================================")
 
     try:
+
+        # Run one check immediately
+        check_prices()
 
         while True:
 

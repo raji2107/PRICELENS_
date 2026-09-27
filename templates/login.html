@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Login | PriceLens{% endblock %}
@@ -13,12 +12,16 @@
 body {
     margin: 0;
     background: #070914;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 /* =========================
    MAIN PAGE
 ========================= */
+
+html {
+    background-color: #070914;
+}
 
 .login-page {
     min-height: 92vh;
@@ -34,17 +37,17 @@ body {
     background:
         radial-gradient(
             circle at 10% 20%,
-            rgba(124, 58, 237, 0.35),
+            rgba(124, 58, 237, 0.38),
             transparent 32%
         ),
         radial-gradient(
             circle at 90% 15%,
-            rgba(6, 182, 212, 0.28),
+            rgba(29, 78, 216, 0.32),
             transparent 30%
         ),
         radial-gradient(
             circle at 80% 90%,
-            rgba(236, 72, 153, 0.22),
+            rgba(109, 40, 217, 0.24),
             transparent 30%
         ),
         #070914;
@@ -60,12 +63,13 @@ body {
     border-radius: 50%;
     filter: blur(5px);
     pointer-events: none;
+    animation: orbFloat 10s ease-in-out infinite;
 }
 
 .orb-1 {
     width: 300px;
     height: 300px;
-    background: rgba(124, 58, 237, 0.25);
+    background: rgba(124, 58, 237, 0.28);
     top: -130px;
     left: -80px;
 }
@@ -73,17 +77,31 @@ body {
 .orb-2 {
     width: 260px;
     height: 260px;
-    background: rgba(6, 182, 212, 0.20);
+    background: rgba(29, 78, 216, 0.22);
     right: -100px;
     bottom: -80px;
+
+    animation-duration: 13s;
+    animation-direction: reverse;
 }
 
 .orb-3 {
     width: 120px;
     height: 120px;
-    background: rgba(236, 72, 153, 0.22);
+    background: rgba(109, 40, 217, 0.25);
     right: 25%;
     top: 8%;
+
+    animation-duration: 8s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(18px, -18px) scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .orb { animation: none; }
 }
 
 
@@ -170,7 +188,7 @@ body {
             145deg,
             rgba(124,58,237,.16),
             rgba(37,99,235,.08),
-            rgba(6,182,212,.08)
+            rgba(29,78,216,.08)
         );
 }
 
@@ -210,15 +228,23 @@ body {
             135deg,
             #8b5cf6,
             #2563eb,
-            #06b6d4
+            #1d4ed8
         );
 
     box-shadow:
         0 0 25px rgba(99,102,241,.5);
+
+    transition: transform .35s cubic-bezier(.2,.8,.3,1.2), box-shadow .35s ease;
+}
+
+.logo:hover .logo-mark {
+    transform: rotate(-10deg) scale(1.12);
+
+    box-shadow: 0 0 36px rgba(59,130,246,.75);
 }
 
 .logo span {
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -248,14 +274,24 @@ body {
             90deg,
             #a78bfa,
             #60a5fa,
-            #67e8f9,
-            #f0abfc
+            #93c5fd,
+            #c4b5fd,
+            #a78bfa
         );
+
+    background-size: 300% auto;
 
     -webkit-background-clip: text;
     background-clip: text;
 
     color: transparent;
+
+    animation: loginGradientShift 6s linear infinite;
+}
+
+@keyframes loginGradientShift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
 }
 
 .visual-content p {
@@ -263,11 +299,11 @@ body {
 
     margin-top: 20px;
 
-    color: #94a3b8;
+    color: #a0aec0;
 
-    font-size: 15px;
+    font-size: 15.5px;
 
-    line-height: 1.8;
+    line-height: 1.85;
 }
 
 
@@ -294,7 +330,27 @@ body {
     border: 1px solid rgba(255,255,255,.10);
 
     box-shadow:
-        0 20px 50px rgba(0,0,0,.25);
+        0 20px 50px rgba(0,0,0,.25),
+        0 0 45px rgba(139,92,246,.12);
+
+    transition: .4s cubic-bezier(.2,.8,.2,1);
+
+    animation: analyticsFloat 6s ease-in-out infinite;
+}
+
+@keyframes analyticsFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+
+.analytics-card:hover {
+    box-shadow:
+        0 26px 60px rgba(0,0,0,.3),
+        0 0 55px rgba(139,92,246,.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .analytics-card { animation: none; }
 }
 
 
@@ -319,11 +375,39 @@ body {
 
     font-size: 9px;
 
-    color: #67e8f9;
+    font-weight: 800;
 
-    border: 1px solid rgba(34,211,238,.25);
+    letter-spacing: .4px;
 
-    background: rgba(6,182,212,.10);
+    color: #93c5fd;
+
+    border: 1px solid rgba(59,130,246,.3);
+
+    background: rgba(29,78,216,.14);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status::before {
+    content: "";
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    box-shadow: 0 0 8px rgba(59,130,246,.9);
+
+    animation: statusPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .4; transform: scale(1.3); }
 }
 
 
@@ -362,54 +446,113 @@ body {
 }
 
 
-/* Chart */
+/* AI Robot widget (replaces price chart) */
 
-.chart-area {
+.ai-robot-row {
     height: 110px;
 
     margin-top: 20px;
 
+    padding: 14px 16px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(124,58,237,.16),
+            rgba(29,78,216,.10)
+        );
+
+    border: 1px solid rgba(139,92,246,.2);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
     position: relative;
-
-    border-bottom: 1px solid rgba(255,255,255,.08);
-
     overflow: hidden;
 }
 
-.chart-line {
+.ai-robot-row::before {
+    content: "";
+
     position: absolute;
 
-    left: 0;
-    bottom: 15px;
+    width: 140px;
+    height: 140px;
 
-    width: 100%;
-    height: 80px;
+    top: -50px;
+    right: -50px;
+
+    background: radial-gradient(circle, rgba(59,130,246,.3), transparent 70%);
+
+    filter: blur(20px);
+
+    pointer-events: none;
 }
 
-.chart-line svg {
+.mini-robot {
+    flex-shrink: 0;
+
+    width: 56px;
+    height: 56px;
+
+    animation: miniRobotFloat 3.2s ease-in-out infinite;
+}
+
+@keyframes miniRobotFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-5px) rotate(-3deg); }
+}
+
+.mini-robot svg {
     width: 100%;
     height: 100%;
+
+    filter: drop-shadow(0 4px 14px rgba(139,92,246,.5));
 }
 
-.chart-path {
-    fill: none;
-
-    stroke: #67e8f9;
-
-    stroke-width: 3;
-
-    stroke-linecap: round;
-
-    filter:
-        drop-shadow(
-            0 0 8px rgba(103,232,249,.65)
-        );
+.mini-robot-eye {
+    animation: miniRobotBlink 3.6s ease-in-out infinite;
+    transform-origin: center;
 }
 
-.chart-area-fill {
-    fill:
-        url(#gradient);
-    opacity: .15;
+.mini-robot-eye.right {
+    animation-delay: .12s;
+}
+
+@keyframes miniRobotBlink {
+    0%, 88%, 100% { transform: scaleY(1); }
+    92%           { transform: scaleY(.15); }
+}
+
+.ai-robot-text {
+    flex: 1;
+    min-width: 0;
+
+    position: relative;
+    z-index: 2;
+}
+
+.ai-robot-text strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: #e2e8f0;
+
+    margin-bottom: 4px;
+}
+
+.ai-robot-text span {
+    font-size: 10.5px;
+
+    color: #93c5fd;
+
+    font-weight: 700;
 }
 
 
@@ -466,20 +609,28 @@ body {
 
     border-radius: 15px;
 
-    background: rgba(15,23,42,.75);
+    background: rgba(15,23,42,.8);
 
-    border: 1px solid rgba(34,211,238,.18);
+    border: 1px solid rgba(59,130,246,.25);
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.3);
+        0 15px 35px rgba(0,0,0,.35),
+        0 0 25px rgba(59,130,246,.15);
 
     color: #cbd5e1;
 
     font-size: 11px;
+
+    animation: alertBob 4s ease-in-out infinite;
+}
+
+@keyframes alertBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
 }
 
 .alert-line {
-    color: #67e8f9;
+    color: #93c5fd;
 
     font-weight: 800;
 
@@ -529,7 +680,7 @@ body {
 
     color: white;
 
-    font-size: 31px;
+    font-size: 33px;
 
     font-weight: 900;
 }
@@ -537,9 +688,9 @@ body {
 .form-heading p {
     margin: 0;
 
-    color: #64748b;
+    color: #94a3b8;
 
-    font-size: 13px;
+    font-size: 13.5px;
 }
 
 
@@ -558,9 +709,11 @@ body {
 
     color: #cbd5e1;
 
-    font-size: 12px;
+    font-size: 12.5px;
 
     font-weight: 700;
+
+    letter-spacing: .3px;
 }
 
 .input-wrapper {
@@ -597,23 +750,23 @@ body {
 
     color: #f8fafc;
 
-    font-size: 13px;
+    font-size: 14px;
 
     transition: .25s;
 }
 
 .form-group input::placeholder {
-    color: #475569;
+    color: #64748b;
 }
 
 .form-group input:focus {
-    border-color: #6366f1;
+    border-color: #7c3aed;
 
     background: rgba(15,23,42,.85);
 
     box-shadow:
-        0 0 0 3px rgba(99,102,241,.12),
-        0 0 25px rgba(99,102,241,.10);
+        0 0 0 3px rgba(139,92,246,.14),
+        0 0 25px rgba(139,92,246,.15);
 }
 
 
@@ -641,7 +794,7 @@ body {
 }
 
 .eye-btn:hover {
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -668,7 +821,7 @@ body {
 }
 
 .forgot a:hover {
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -701,20 +854,53 @@ body {
             #7c3aed,
             #4f46e5,
             #2563eb,
-            #0891b2
+            #1e3a8a
         );
+
+    background-size: 220% auto;
 
     box-shadow:
         0 12px 30px rgba(79,70,229,.25);
 
     transition: .3s;
+
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.login-btn::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            115deg,
+            transparent 20%,
+            rgba(255,255,255,.35) 45%,
+            transparent 70%
+        );
+
+    transform: translateX(-120%);
+
+    z-index: -1;
+}
+
+.login-btn:hover::before {
+    transform: translateX(120%);
+    transition: transform .7s ease;
 }
 
 .login-btn:hover {
     transform: translateY(-2px);
 
+    background-position: 100% 0;
+
     box-shadow:
-        0 18px 40px rgba(79,70,229,.40);
+        0 18px 44px rgba(79,70,229,.5),
+        0 0 24px rgba(139,92,246,.3);
 }
 
 
@@ -769,7 +955,7 @@ body {
 }
 
 .register-text a:hover {
-    color: #67e8f9;
+    color: #93c5fd;
 }
 
 
@@ -925,60 +1111,41 @@ body {
                     </div>
 
 
-                    <div class="chart-area">
+                    <div class="ai-robot-row">
 
-                        <div class="chart-line">
+                        <div class="mini-robot">
 
-                            <svg
-                                viewBox="0 0 400 100"
-                                preserveAspectRatio="none"
-                            >
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 
                                 <defs>
-
-                                    <linearGradient
-                                        id="gradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="1"
-                                    >
-
-                                        <stop
-                                            offset="0%"
-                                            stop-color="#67e8f9"
-                                        />
-
-                                        <stop
-                                            offset="100%"
-                                            stop-color="#7c3aed"
-                                        />
-
+                                    <linearGradient id="miniRobotBody" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#8b5cf6"/>
+                                        <stop offset="100%" stop-color="#1d4ed8"/>
                                     </linearGradient>
-
                                 </defs>
 
-                                <path
-                                    class="chart-area-fill"
-                                    d="M0,75
-                                       C50,65 65,80 100,60
-                                       C140,40 155,70 190,50
-                                       C230,25 250,45 280,30
-                                       C320,10 350,35 400,12
-                                       L400,100 L0,100 Z"
-                                />
+                                <line x1="50" y1="8" x2="50" y2="20" stroke="#818cf8" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="50" cy="7" r="5" fill="#3b82f6"/>
 
-                                <path
-                                    class="chart-path"
-                                    d="M0,75
-                                       C50,65 65,80 100,60
-                                       C140,40 155,70 190,50
-                                       C230,25 250,45 280,30
-                                       C320,10 350,35 400,12"
-                                />
+                                <rect x="20" y="20" width="60" height="52" rx="16" fill="url(#miniRobotBody)"/>
+                                <rect x="20" y="20" width="60" height="52" rx="16" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+
+                                <rect x="29" y="32" width="42" height="28" rx="10" fill="#0f1120"/>
+
+                                <rect class="mini-robot-eye left" x="36" y="42" width="9" height="9" rx="3" fill="#93c5fd"/>
+                                <rect class="mini-robot-eye right" x="55" y="42" width="9" height="9" rx="3" fill="#93c5fd"/>
+
+                                <rect x="10" y="38" width="8" height="16" rx="4" fill="#7c3aed"/>
+                                <rect x="82" y="38" width="8" height="16" rx="4" fill="#7c3aed"/>
 
                             </svg>
 
+                        </div>
+
+
+                        <div class="ai-robot-text">
+                            <strong>AI Price Watch active</strong>
+                            <span>Monitoring 24/7 · alerts you the instant it drops</span>
                         </div>
 
                     </div>
@@ -1189,4 +1356,3 @@ function togglePassword() {
 </script>
 
 {% endblock %}
-

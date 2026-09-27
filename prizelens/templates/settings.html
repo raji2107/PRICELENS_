@@ -1,0 +1,656 @@
+{% extends "base.html" %}
+
+{% block title %}PriceLens - Settings{% endblock %}
+
+{% block content %}
+
+<style>
+
+.settings-page {
+    min-height: calc(100vh - 68px);
+    display: flex;
+    gap: 22px;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.settings-sidebar {
+    width: 230px;
+    flex-shrink: 0;
+
+    padding: 22px 15px;
+
+    border-right:
+        1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(255,255,255,.015);
+}
+
+.sidebar-section-title {
+    color: #475569;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    margin:
+        10px 12px 12px;
+}
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        12px 13px;
+
+    margin-bottom: 5px;
+
+    border-radius: 10px;
+
+    color: #94a3b8;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition: .25s;
+}
+
+.sidebar-link:hover {
+    color: white;
+
+    background:
+        rgba(99,102,241,.10);
+
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,58,237,.25),
+            rgba(37,99,235,.18)
+        );
+
+    border:
+        1px solid rgba(99,102,241,.18);
+}
+
+.sidebar-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(255,255,255,.04);
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+.sidebar-divider {
+    height: 1px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    margin:
+        20px 5px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.settings-main {
+    flex: 1;
+
+    min-width: 0;
+
+    padding:
+        25px 20px 45px;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.settings-topbar {
+    margin-bottom: 28px;
+}
+
+.settings-title {
+    font-size: 27px;
+
+    font-weight: 900;
+
+    margin-bottom: 5px;
+}
+
+.settings-subtitle {
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   SETTINGS CARD
+===================================================== */
+
+.settings-card {
+    padding: 22px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    margin-bottom: 18px;
+}
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+.card-header span {
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   SETTING ROW
+===================================================== */
+
+.setting-row {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding:
+        17px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+}
+
+.setting-row:last-child {
+    border-bottom: none;
+}
+
+.setting-title {
+    color: #e2e8f0;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    margin-bottom: 5px;
+}
+
+.setting-description {
+    color: #64748b;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.setting-status {
+    padding:
+        5px 10px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(34,197,94,.08);
+
+    color: #4ade80;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   ACCOUNT
+===================================================== */
+
+.account-info {
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.7;
+}
+
+.account-name {
+    color: #e2e8f0;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width:800px) {
+
+    .settings-page {
+        display: block;
+    }
+
+    .settings-sidebar {
+        width: 100%;
+
+        border-right: none;
+
+        border-bottom:
+            1px solid rgba(255,255,255,.06);
+
+        padding: 12px;
+
+        display: flex;
+
+        overflow-x: auto;
+
+        gap: 5px;
+    }
+
+    .sidebar-section-title,
+    .sidebar-divider {
+        display: none;
+    }
+
+    .sidebar-link {
+        margin: 0;
+
+        white-space: nowrap;
+    }
+
+    .settings-main {
+        padding:
+            25px 10px 40px;
+    }
+}
+
+@media (max-width:600px) {
+
+    .settings-title {
+        font-size: 22px;
+    }
+
+    .setting-row {
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+
+<div class="settings-page">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="settings-sidebar">
+
+    <div class="sidebar-section-title">
+        MAIN MENU
+    </div>
+
+
+    <a
+        href="{{ url_for('dashboard') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">D</div>
+        Dashboard
+    </a>
+
+
+    <a
+        href="{{ url_for('products') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">P</div>
+        Products
+    </a>
+
+
+    <a
+        href="{{ url_for('price_analytics') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">A</div>
+        Price Analytics
+    </a>
+
+
+    <a
+        href="{{ url_for('alerts') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">!</div>
+        Alerts
+    </a>
+
+
+    <a
+        href="{{ url_for('watchlist') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">W</div>
+        Watchlist
+    </a>
+
+
+    <div class="sidebar-divider"></div>
+
+
+    <div class="sidebar-section-title">
+        ACCOUNT
+    </div>
+
+
+    <a
+        href="{{ url_for('settings') }}"
+        class="sidebar-link active"
+    >
+        <div class="sidebar-icon">S</div>
+        Settings
+    </a>
+
+
+    <a
+        href="{{ url_for('profile') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">U</div>
+        Profile
+    </a>
+
+
+    <a
+        href="{{ url_for('logout') }}"
+        class="sidebar-link"
+    >
+        <div class="sidebar-icon">L</div>
+        Logout
+    </a>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="settings-main">
+
+
+    <div class="settings-topbar">
+
+        <h1 class="settings-title">
+            Settings
+        </h1>
+
+        <p class="settings-subtitle">
+            Manage your PriceLens account and monitoring preferences.
+        </p>
+
+    </div>
+
+
+
+    <!-- =================================================
+         ACCOUNT SETTINGS
+    ================================================= -->
+
+    <section class="settings-card">
+
+
+        <div class="card-header">
+
+            <h3>
+                Account Settings
+            </h3>
+
+            <span>
+                PriceLens
+            </span>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    Account
+                </div>
+
+                <div class="setting-description">
+                    Your PriceLens account is currently active.
+                </div>
+
+            </div>
+
+            <div class="setting-status">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    Price Monitoring
+                </div>
+
+                <div class="setting-description">
+                    PriceLens automatically monitors your tracked products.
+                </div>
+
+            </div>
+
+            <div class="setting-status">
+                ENABLED
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    Email Alerts
+                </div>
+
+                <div class="setting-description">
+                    Receive notifications when products reach your target price.
+                </div>
+
+            </div>
+
+            <div class="setting-status">
+                ENABLED
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         MONITORING
+    ================================================= -->
+
+    <section class="settings-card">
+
+
+        <div class="card-header">
+
+            <h3>
+                Monitoring Preferences
+            </h3>
+
+            <span>
+                Automatic
+            </span>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    Automatic Price Checking
+                </div>
+
+                <div class="setting-description">
+                    PriceLens checks tracked products automatically using the monitoring scheduler.
+                </div>
+
+            </div>
+
+            <div class="setting-status">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+        <div class="setting-row">
+
+            <div>
+
+                <div class="setting-title">
+                    Target Price Detection
+                </div>
+
+                <div class="setting-description">
+                    Products are checked against the target price you entered.
+                </div>
+
+            </div>
+
+            <div class="setting-status">
+                ACTIVE
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         USER ACCOUNT
+    ================================================= -->
+
+    <section class="settings-card">
+
+
+        <div class="card-header">
+
+            <h3>
+                Account Information
+            </h3>
+
+        </div>
+
+
+        <div class="account-info">
+
+            Logged in as
+
+            <span class="account-name">
+                {{ user_name }}
+            </span>
+
+            <br>
+
+            PriceLens cloud-based e-commerce price monitoring account.
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+</div>
+
+
+{% endblock %}

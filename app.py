@@ -25,7 +25,6 @@ from config import (
 from scraper.price_scraper import scrape_product
 
 
-
 app = Flask(__name__)
 
 app.secret_key = "pricelens-secret-key-change-later"
@@ -61,6 +60,8 @@ def send_email(to_email, subject, message):
         MIMEText(message, "plain")
     )
 
+    server = None
+
     try:
 
         server = smtplib.SMTP(
@@ -82,15 +83,25 @@ def send_email(to_email, subject, message):
             msg.as_string()
         )
 
-        server.quit()
-
         return True
 
     except Exception as e:
 
-        print("Email Error:", e)
+        print(
+            "Email Error:",
+            e
+        )
 
         return False
+
+    finally:
+
+        if server:
+
+            try:
+                server.quit()
+            except Exception:
+                pass
 
 
 # ==============================
@@ -187,10 +198,193 @@ def dashboard():
             url_for("login")
         )
 
-    return render_template(
-        "dashboard.html",
-        user_name=session["user_name"]
-    )
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(
+            dictionary=True
+        )
+
+        user_id = session["user_id"]
+
+        # =================================
+        # TOTAL TRACKED PRODUCTS
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total_products
+            FROM products
+            WHERE user_id = %s
+            """,
+            (user_id,)
+        )
+
+        total_products = cursor.fetchone()["total_products"]
+
+        # =================================
+        # PRODUCTS WITH PRICE DROP
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS price_drops
+            FROM products
+            WHERE user_id = %s
+              AND current_price IS NOT NULL
+              AND highest_price IS NOT NULL
+              AND current_price < highest_price
+            """,
+            (user_id,)
+        )
+
+        price_drops = cursor.fetchone()["price_drops"]
+
+        # =================================
+        # ACTIVE TARGET ALERTS
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS active_alerts
+            FROM products
+            WHERE user_id = %s
+              AND current_price IS NOT NULL
+              AND target_price IS NOT NULL
+              AND current_price <= target_price
+            """,
+            (user_id,)
+        )
+
+        active_alerts = cursor.fetchone()["active_alerts"]
+
+        # =================================
+        # AVERAGE SAVINGS
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT
+                AVG(
+                    GREATEST(
+                        highest_price - current_price,
+                        0
+                    )
+                ) AS average_savings
+            FROM products
+            WHERE user_id = %s
+              AND current_price IS NOT NULL
+              AND highest_price IS NOT NULL
+            """,
+            (user_id,)
+        )
+
+        average_savings_result = cursor.fetchone()
+
+        average_savings = (
+            average_savings_result["average_savings"]
+            or 0
+        )
+
+        # =================================
+        # RECENT PRODUCTS
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                product_name,
+                current_price,
+                target_price,
+                highest_price,
+                lowest_price,
+                average_price,
+                product_image,
+                product_url,
+                created_at
+            FROM products
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+            LIMIT 5
+            """,
+            (user_id,)
+        )
+
+        recent_products = cursor.fetchall()
+
+        # =================================
+        # PRICE HISTORY
+        # =================================
+
+        cursor.execute(
+            """
+            SELECT
+                ph.product_id,
+                ph.price,
+                ph.recorded_at,
+                p.product_name
+            FROM price_history ph
+            JOIN products p
+                ON ph.product_id = p.id
+            WHERE p.user_id = %s
+            ORDER BY ph.recorded_at ASC
+            LIMIT 30
+            """,
+            (user_id,)
+        )
+
+        price_history = cursor.fetchall()
+
+        for row in price_history:
+            row["price"] = float(row["price"])
+
+            if row["recorded_at"]:
+               row["recorded_at"] = row["recorded_at"].strftime(
+                   "%Y-%m-%d %H:%M:%S"
+               )
+
+        # =================================
+        # DASHBOARD RENDER
+        # =================================
+
+        return render_template(
+            "dashboard.html",
+            user_name=session["user_name"],
+            total_products=total_products,
+            price_drops=price_drops,
+            active_alerts=active_alerts,
+            average_savings=average_savings,
+            recent_products=recent_products,
+            price_history=price_history
+        )
+
+    except Exception as e:
+
+        print(
+            "❌ Dashboard Error:",
+            e
+        )
+
+        return (
+            "<h3>Dashboard Error</h3>"
+            "<p>" + str(e) + "</p>"
+            "<a href='/dashboard'>Go Back</a>"
+        )
+
+    finally:
+
+        if cursor:
+
+            cursor.close()
+
+        if conn:
+
+            conn.close()
 
 
 # ==============================
@@ -205,6 +399,9 @@ def products():
         return redirect(
             url_for("login")
         )
+
+    conn = None
+    cursor = None
 
     try:
 
@@ -228,10 +425,6 @@ def products():
 
         products_list = cursor.fetchall()
 
-        cursor.close()
-
-        conn.close()
-
         return render_template(
             "products.html",
             products=products_list
@@ -244,6 +437,16 @@ def products():
             "<p>" + str(e) + "</p>"
         )
 
+    finally:
+
+        if cursor:
+
+            cursor.close()
+
+        if conn:
+
+            conn.close()
+
 
 # ==============================
 # ADD / TRACK PRODUCT
@@ -255,16 +458,11 @@ def products():
 )
 def add_product():
 
-    # Login check
-
     if "user_id" not in session:
 
         return redirect(
             url_for("login")
         )
-
-
-    # Get form values
 
     product_url = request.form.get(
         "product_url",
@@ -275,7 +473,6 @@ def add_product():
         "target_price",
         ""
     ).strip()
-
 
     # ==============================
     # VALIDATION
@@ -288,7 +485,6 @@ def add_product():
             "and Target Price.</h3>"
             "<a href='/products'>Go Back</a>"
         )
-
 
     try:
 
@@ -311,7 +507,6 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
-
     # ==============================
     # SCRAPE PRODUCT
     # ==============================
@@ -323,7 +518,6 @@ def add_product():
     print("URL:", product_url)
     print("Target Price:", target_price)
     print("Starting scraper...")
-
 
     try:
 
@@ -344,7 +538,6 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
-
     # ==============================
     # CHECK SCRAPER RESULT
     # ==============================
@@ -358,7 +551,6 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
-
     product_name = product.get(
         "name"
     )
@@ -370,7 +562,6 @@ def add_product():
     product_image = product.get(
         "image"
     )
-
 
     print(
         "Product Name:",
@@ -387,7 +578,6 @@ def add_product():
         product_image
     )
 
-
     if not product_name:
 
         return (
@@ -396,7 +586,6 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
-
     if current_price is None:
 
         return (
@@ -404,7 +593,6 @@ def add_product():
             "be extracted.</h3>"
             "<a href='/products'>Go Back</a>"
         )
-
 
     # ==============================
     # CONVERT PRICE
@@ -427,17 +615,18 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
+    # ==============================
+    # SAVE PRODUCT
+    # ==============================
 
-    # ==============================
-    # SAVE PRODUCT TO MYSQL
-    # ==============================
+    conn = None
+    cursor = None
 
     try:
 
         conn = get_db_connection()
 
         cursor = conn.cursor()
-
 
         cursor.execute(
             """
@@ -479,13 +668,32 @@ def add_product():
             )
         )
 
+        product_id = cursor.lastrowid
+
+        # ==============================
+        # FIRST PRICE HISTORY RECORD
+        # ==============================
+
+        cursor.execute(
+            """
+            INSERT INTO price_history
+            (
+                product_id,
+                price
+            )
+            VALUES
+            (
+                %s,
+                %s
+            )
+            """,
+            (
+                product_id,
+                current_price
+            )
+        )
 
         conn.commit()
-
-        cursor.close()
-
-        conn.close()
-
 
         print()
         print("================================")
@@ -494,9 +702,13 @@ def add_product():
         print("Name:", product_name)
         print("Price:", current_price)
         print("Target:", target_price)
-
+        print("Price history saved!")
 
     except Exception as e:
+
+        if conn:
+
+            conn.rollback()
 
         print(
             "Database Error:",
@@ -509,6 +721,15 @@ def add_product():
             "<a href='/products'>Go Back</a>"
         )
 
+    finally:
+
+        if cursor:
+
+            cursor.close()
+
+        if conn:
+
+            conn.close()
 
     # ==============================
     # TARGET PRICE ALERT
@@ -517,17 +738,14 @@ def add_product():
     if current_price <= target_price:
 
         print()
-
         print(
-            "🎯 TARGET PRICE REACHED!"
+            "🎯 TARGET PRICE REACHED!" 
         )
-
 
         alert_subject = (
             "🎯 PriceLens - "
             "Target Price Reached!"
         )
-
 
         alert_message = f"""
 Hello {session["user_name"]},
@@ -536,11 +754,14 @@ Good news! 🎉
 
 Your tracked product has reached your target price.
 
-Product: {product_name}
+Product:
+{product_name}  ,
 
-Current Price: ₹{current_price:,.2f}
+Current Price:
+₹{current_price:,.2f}
 
-Target Price: ₹{target_price:,.2f}
+Target Price:
+₹{target_price:,.2f}
 
 🔥 The current price is now at or below your target price.
 
@@ -553,13 +774,11 @@ Happy Shopping!
 PriceLens Team
 """
 
-
         email_success = send_email(
             session["user_email"],
             alert_subject,
             alert_message
         )
-
 
         if email_success:
 
@@ -568,6 +787,7 @@ PriceLens Team
             )
 
         else:
+
 
             print(
                 "⚠️ Target reached, "
@@ -581,9 +801,8 @@ PriceLens Team
             "target price."
         )
 
-
     # ==============================
-    # RETURN TO PRODUCTS
+    # RETURN
     # ==============================
 
     return redirect(
@@ -613,7 +832,6 @@ def login():
             ""
         )
 
-
         try:
 
             conn = get_db_connection()
@@ -622,20 +840,19 @@ def login():
                 dictionary=True
             )
 
-
             cursor.execute(
-                "SELECT * FROM users WHERE email = %s",
+                """
+                SELECT *
+                FROM users
+                WHERE email = %s
+                """,
                 (email,)
             )
 
-
             user = cursor.fetchone()
 
-
             cursor.close()
-
             conn.close()
-
 
             if not user:
 
@@ -644,7 +861,6 @@ def login():
                     "or password.</h3>"
                     "<a href='/login'>Go Back</a>"
                 )
-
 
             if not check_password_hash(
                 user["password"],
@@ -657,7 +873,6 @@ def login():
                     "<a href='/login'>Go Back</a>"
                 )
 
-
             if not user["email_verified"]:
 
                 return (
@@ -667,7 +882,6 @@ def login():
                     "first.</p>"
                     "<a href='/login'>Go Back</a>"
                 )
-
 
             session["user_id"] = user["id"]
 
@@ -679,11 +893,9 @@ def login():
                 user["email"]
             )
 
-
             return redirect(
                 url_for("dashboard")
             )
-
 
         except Exception as e:
 
@@ -693,10 +905,196 @@ def login():
                 "<a href='/login'>Go Back</a>"
             )
 
-
     return render_template(
         "login.html"
     )
+    
+    # ==============================
+# ALERTS
+# ==============================
+
+@app.route("/alerts")
+def alerts():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT
+                pa.id,
+                pa.product_id,
+                pa.target_price,
+                pa.sent_at,
+                p.product_name,
+                p.current_price,
+                p.product_image,
+                p.product_url
+            FROM price_alerts pa
+            JOIN products p
+                ON pa.product_id = p.id
+            WHERE pa.user_id = %s
+            ORDER BY pa.sent_at DESC
+            """,
+            (session["user_id"],)
+        )
+
+        alerts = cursor.fetchall()
+
+        return render_template(
+            "alerts.html",
+            user_name=session["user_name"],
+            alerts=alerts
+        )
+
+    except Exception as e:
+        print("❌ Alerts Error:", e)
+        return (
+            "<h3>Alerts Error</h3>"
+            "<p>" + str(e) + "</p>"
+            "<a href='/dashboard'>Go Back</a>"
+        )
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+# ==============================
+# PRICE ANALYTICS
+# ==============================
+@app.route("/price-analytics")
+def price_analytics():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT id, product_name, current_price, target_price,
+               highest_price, lowest_price, average_price,
+               product_image, product_url
+        FROM products
+        WHERE user_id = %s
+        ORDER BY created_at DESC
+    """, (session["user_id"],))
+
+    products = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT ph.product_id, ph.price, ph.recorded_at,
+               p.product_name
+        FROM price_history ph
+        JOIN products p ON ph.product_id = p.id
+        WHERE p.user_id = %s
+        ORDER BY ph.recorded_at ASC
+    """, (session["user_id"],))
+
+    price_history = cursor.fetchall()
+
+    for row in price_history:
+        row["price"] = float(row["price"])
+        if row["recorded_at"]:
+            row["recorded_at"] = row["recorded_at"].strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+    cursor.execute("""
+        SELECT
+            COUNT(*) AS total_products,
+            COALESCE(AVG(current_price), 0) AS avg_current,
+            COALESCE(AVG(average_price), 0) AS avg_average,
+            COALESCE(MAX(highest_price), 0) AS highest_recorded,
+            COALESCE(MIN(lowest_price), 0) AS lowest_recorded
+        FROM products
+        WHERE user_id = %s
+    """, (session["user_id"],))
+
+    stats = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "price_analytics.html",
+        user_name=session["user_name"],
+        products=products,
+        price_history=price_history,
+        stats=stats
+    )
+
+# ==============================
+# WATCHLIST
+# ==============================
+
+@app.route("/watchlist")
+def watchlist():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_db_connection()
+
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                id,
+                product_name,
+                current_price,
+                target_price,
+                highest_price,
+                lowest_price,
+                average_price,
+                product_image,
+                product_url
+            FROM products
+            WHERE user_id = %s
+            ORDER BY id DESC
+        """, (session["user_id"],))
+
+        products = cursor.fetchall()
+
+        return render_template(
+            "watchlist.html",
+            user_name=session["user_name"],
+            products=products
+        )
+
+    except Exception as e:
+
+        print("❌ Watchlist Error:", e)
+
+        return (
+            "<h3>Watchlist Error</h3>"
+            "<p>" + str(e) + "</p>"
+            "<a href='/dashboard'>Go Back</a>"
+        )
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if conn:
+            conn.close()
+
+
 
 
 # ==============================
@@ -711,6 +1109,86 @@ def logout():
     return redirect(
         url_for("login")
     )
+
+# ==============================
+# PROFILE
+# ==============================
+
+@app.route("/profile")
+def profile():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = None
+    cursor = None
+
+    try:
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT
+                id,
+                full_name,
+                email,
+                email_verified,
+                created_at
+            FROM users
+            WHERE id = %s
+        """, (session["user_id"],))
+
+        user = cursor.fetchone()
+
+        return render_template(
+            "profile.html",
+            user=user,
+            user_name=session["user_name"]
+        )
+
+    except Exception as e:
+
+        print("❌ Profile Error:", e)
+
+        return (
+            "<h3>Profile Error</h3>"
+            "<p>" + str(e) + "</p>"
+            "<a href='/dashboard'>Go Back</a>"
+        )
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if conn:
+            conn.close()
+
+
+# ==============================
+# SETTINGS
+# ==============================
+
+@app.route("/settings")
+def settings():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    return render_template(
+        "settings.html",
+        user_name=session["user_name"]
+    )
+
+
+
+
+
+
+
+
+
 
 
 # ==============================
@@ -745,7 +1223,6 @@ def register():
             ""
         )
 
-
         if (
             not full_name
             or not email
@@ -758,11 +1235,9 @@ def register():
                 "<a href='/register'>Go Back</a>"
             )
 
-
         error = validate_password(
             password
         )
-
 
         if error:
 
@@ -771,7 +1246,6 @@ def register():
                 "<a href='/register'>Go Back</a>"
             )
 
-
         if password != confirm_password:
 
             return (
@@ -779,25 +1253,24 @@ def register():
                 "<a href='/register'>Go Back</a>"
             )
 
-
         hashed_password = (
             generate_password_hash(
                 password
             )
         )
 
-
         verification_token = (
             secrets.token_urlsafe(32)
         )
 
+        conn = None
+        cursor = None
 
         try:
 
             conn = get_db_connection()
 
             cursor = conn.cursor()
-
 
             cursor.execute(
                 """
@@ -827,14 +1300,7 @@ def register():
                 )
             )
 
-
             conn.commit()
-
-
-            cursor.close()
-
-            conn.close()
-
 
             email_sent = (
                 send_verification_email(
@@ -843,7 +1309,6 @@ def register():
                     verification_token
                 )
             )
-
 
             if email_sent:
 
@@ -860,7 +1325,6 @@ def register():
                     "</a>"
                 )
 
-
             return (
                 "<h3>Account created, "
                 "but email could not be sent.</h3>"
@@ -869,14 +1333,12 @@ def register():
                 "<a href='/login'>Go to Login</a>"
             )
 
-
         except mysql.connector.IntegrityError:
 
             return (
                 "<h3>Email already registered.</h3>"
                 "<a href='/register'>Go Back</a>"
             )
-
 
         except Exception as e:
 
@@ -886,6 +1348,15 @@ def register():
                 "<a href='/register'>Go Back</a>"
             )
 
+        finally:
+
+            if cursor:
+
+                cursor.close()
+
+            if conn:
+
+                conn.close()
 
     return render_template(
         "register.html"
@@ -901,6 +1372,9 @@ def register():
 )
 def verify_email(token):
 
+    conn = None
+    cursor = None
+
     try:
 
         conn = get_db_connection()
@@ -908,7 +1382,6 @@ def verify_email(token):
         cursor = conn.cursor(
             dictionary=True
         )
-
 
         cursor.execute(
             """
@@ -919,15 +1392,9 @@ def verify_email(token):
             (token,)
         )
 
-
         user = cursor.fetchone()
 
-
         if not user:
-
-            cursor.close()
-
-            conn.close()
 
             return (
                 "<h3>Invalid or expired "
@@ -936,7 +1403,6 @@ def verify_email(token):
                 "Go to Login"
                 "</a>"
             )
-
 
         cursor.execute(
             """
@@ -949,14 +1415,7 @@ def verify_email(token):
             (user["id"],)
         )
 
-
         conn.commit()
-
-
-        cursor.close()
-
-        conn.close()
-
 
         return (
             "<h2>Email verified "
@@ -970,7 +1429,6 @@ def verify_email(token):
             "</a>"
         )
 
-
     except Exception as e:
 
         return (
@@ -980,6 +1438,16 @@ def verify_email(token):
             "Go to Login"
             "</a>"
         )
+
+    finally:
+
+        if cursor:
+
+            cursor.close()
+
+        if conn:
+
+            conn.close()
 
 
 # ==============================
@@ -995,14 +1463,12 @@ def email_test():
         "Hello! This is a test email from PriceLens."
     )
 
-
     if success:
 
         return (
             "<h2>Email sent successfully!</h2>"
             "<p>Check your Gmail inbox.</p>"
         )
-
 
     return (
         "<h3>Email sending failed.</h3>"
@@ -1028,7 +1494,6 @@ def db_test():
             "PriceLens MySQL "
             "Connection Successful!"
         )
-
 
     except Exception as e:
 
