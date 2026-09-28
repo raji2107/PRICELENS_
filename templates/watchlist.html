@@ -550,9 +550,9 @@
 
 .target-reached {
     background:
-        rgba(34,211,238,.08);
+        rgba(139,92,246,.08);
 
-    color: #22d3ee;
+    color: #93c5fd;
 }
 
 .monitoring {
@@ -755,6 +755,219 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =====================================================
+   PRICELENS THEME UPGRADE (navy + purple, animated)
+===================================================== */
+
+@keyframes titleShine { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+@keyframes statusPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.3); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes borderShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+.watchlist-title {
+    background: linear-gradient(90deg, #ffffff, #c4b5fd, #93c5fd, #ffffff);
+    background-size: 300% auto;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleShine 8s linear infinite;
+}
+.watchlist-subtitle { color: #8493b8; font-size: 14px; }
+
+/* sidebar */
+.sidebar-link:hover { transform: translateX(3px); }
+.sidebar-link.active {
+    border: 1px solid rgba(139,92,246,.4);
+    box-shadow: 0 0 18px rgba(139,92,246,.2);
+    position: relative;
+}
+.sidebar-link.active::before {
+    content: ""; position: absolute; left: -15px; width: 3px; height: 60%; border-radius: 3px;
+    background: linear-gradient(180deg, #8b5cf6, #3b82f6); box-shadow: 0 0 10px rgba(139,92,246,.8);
+}
+.sidebar-icon { transition: .25s; }
+.sidebar-link.active .sidebar-icon { background: linear-gradient(135deg, #8b5cf6, #1d4ed8); box-shadow: 0 0 12px rgba(139,92,246,.4); }
+
+.profile-button { transition: .25s; }
+.profile-button:hover { border-color: rgba(139,92,246,.4); box-shadow: 0 0 16px rgba(139,92,246,.15); }
+.profile-avatar { background: linear-gradient(135deg, #7c3aed, #1d4ed8); box-shadow: 0 0 12px rgba(139,92,246,.3); }
+
+/* stats */
+.watchlist-stat {
+    position: relative; overflow: hidden; transition: .3s ease;
+    opacity: 0; animation: fadeUp .6s cubic-bezier(.16,.9,.3,1) forwards;
+}
+.watchlist-stat:nth-child(1) { animation-delay: .05s; }
+.watchlist-stat:nth-child(2) { animation-delay: .13s; }
+.watchlist-stat:nth-child(3) { animation-delay: .21s; }
+.watchlist-stat::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #1d4ed8, #a78bfa); background-size: 200% auto;
+    opacity: 0; transition: opacity .3s ease; animation: borderShift 4s linear infinite;
+}
+.watchlist-stat:hover { transform: translateY(-5px); border-color: rgba(139,92,246,.3); box-shadow: 0 16px 40px rgba(0,0,0,.3), 0 0 25px rgba(139,92,246,.12); }
+.watchlist-stat:hover::before { opacity: 1; }
+.stat-icon { background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(29,78,216,.22)); border: 1px solid rgba(139,92,246,.25); color: #d8b4fe; transition: .3s; }
+.watchlist-stat:hover .stat-icon { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 20px rgba(139,92,246,.4); }
+.stat-trend { display: inline-flex; align-items: center; gap: 5px; }
+.stat-trend::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.9); animation: statusPulse 1.8s ease-in-out infinite; }
+.stat-label { color: #7c8bab; font-size: 11px; }
+.stat-value {
+    font-size: 30px;
+    background: linear-gradient(90deg, #ffffff, #c4b5fd, #93c5fd);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* insights strip */
+.insights-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 22px; }
+.insight-tile {
+    padding: 18px 20px; border-radius: 14px; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, rgba(124,58,237,.14), rgba(29,78,216,.09));
+    border: 1px solid rgba(139,92,246,.2); transition: .3s ease;
+}
+.insight-tile::before {
+    content: ""; position: absolute; width: 130px; height: 130px; top: -55px; right: -40px;
+    background: radial-gradient(circle, rgba(59,130,246,.28), transparent 70%); filter: blur(20px); pointer-events: none;
+}
+.insight-tile:hover { transform: translateY(-4px); border-color: rgba(139,92,246,.4); box-shadow: 0 14px 34px rgba(0,0,0,.28), 0 0 22px rgba(139,92,246,.12); }
+.insight-tag {
+    display: inline-block; padding: 2px 9px; border-radius: 20px; margin-bottom: 9px;
+    font-size: 9.5px; font-weight: 800; letter-spacing: .6px;
+    color: #93c5fd; background: rgba(59,130,246,.14); border: 1px solid rgba(59,130,246,.3);
+}
+.insight-big { font-size: 22px; font-weight: 900; color: #e2e8f0; position: relative; z-index: 2; line-height: 1.25; }
+.insight-big.green { color: #4ade80; }
+.insight-small { margin-top: 6px; color: #8493b8; font-size: 12px; line-height: 1.55; position: relative; z-index: 2; }
+
+/* toolbar */
+.wl-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.wl-search { flex: 1; min-width: 190px; position: relative; }
+.wl-search input {
+    width: 100%; height: 40px; padding: 0 14px 0 38px; border-radius: 10px; outline: none;
+    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: #f1f5f9; font-size: 13px; transition: .25s;
+}
+.wl-search input::placeholder { color: #566482; }
+.wl-search input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(139,92,246,.14), 0 0 20px rgba(139,92,246,.12); }
+.wl-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #566482; pointer-events: none; }
+.filter-chip {
+    padding: 9px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: #94a3b8; font-size: 12px; font-weight: 700; transition: .25s;
+}
+.filter-chip:hover { color: #fff; border-color: rgba(139,92,246,.4); }
+.filter-chip.active { color: #fff; border-color: rgba(139,92,246,.5); background: linear-gradient(135deg, rgba(139,92,246,.35), rgba(29,78,216,.28)); box-shadow: 0 0 16px rgba(139,92,246,.2); }
+.sort-select { height: 40px; padding: 0 12px; border-radius: 10px; outline: none; cursor: pointer; border: 1px solid rgba(255,255,255,.08); background: #0b0e19; color: #cbd5e1; font-size: 12.5px; }
+.sort-select:focus { border-color: #7c3aed; }
+.view-toggle { display: inline-flex; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); }
+.view-toggle button { height: 40px; width: 42px; cursor: pointer; border: none; background: rgba(255,255,255,.03); color: #94a3b8; font-size: 15px; transition: .25s; }
+.view-toggle button.active { background: linear-gradient(135deg, rgba(139,92,246,.4), rgba(29,78,216,.3)); color: #fff; }
+.tool-btn { height: 40px; padding: 0 15px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(139,92,246,.3); background: rgba(139,92,246,.08); color: #c4b5fd; font-size: 12px; font-weight: 700; transition: .25s; }
+.tool-btn:hover { background: rgba(139,92,246,.16); color: #fff; box-shadow: 0 0 16px rgba(139,92,246,.2); transform: translateY(-2px); }
+.tool-btn.on { background: linear-gradient(135deg, rgba(139,92,246,.4), rgba(29,78,216,.3)); color: #fff; border-color: rgba(139,92,246,.6); }
+
+/* cards */
+.product-card {
+    position: relative; opacity: 0; animation: fadeUp .55s cubic-bezier(.16,.9,.3,1) forwards;
+    will-change: transform;
+}
+.product-card:nth-child(1) { animation-delay: .05s; }
+.product-card:nth-child(2) { animation-delay: .11s; }
+.product-card:nth-child(3) { animation-delay: .17s; }
+.product-card:nth-child(4) { animation-delay: .23s; }
+.product-card:nth-child(n+5) { animation-delay: .29s; }
+.product-card:hover { border-color: rgba(139,92,246,.4); box-shadow: 0 20px 45px rgba(0,0,0,.35), 0 0 28px rgba(139,92,246,.14); }
+.product-card.selected { border-color: rgba(96,165,250,.7); box-shadow: 0 0 0 1px rgba(96,165,250,.5), 0 0 30px rgba(59,130,246,.25); }
+.product-image-wrapper { position: relative; }
+.product-image { transition: .35s ease; }
+.product-card:hover .product-image { transform: scale(1.06); }
+.product-name { font-size: 16px; }
+.price-label, .info-title { color: #7c8bab; font-size: 10.5px; }
+.current-price { font-size: 22px; }
+.info-value { font-size: 12.5px; }
+
+.name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.name-row .product-name { flex: 1; min-width: 0; }
+.deal-ring {
+    --p: 0; --c: #8b5cf6;
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), rgba(255,255,255,.08) 0);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--c) 40%, transparent);
+    transition: background 1s ease;
+}
+.deal-ring::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #0b0e19; }
+.deal-ring span { position: relative; z-index: 2; font-size: 13px; font-weight: 900; color: #e2e8f0; }
+.deal-ring small { position: absolute; bottom: -17px; left: 50%; transform: translateX(-50%); font-size: 8.5px; font-weight: 800; letter-spacing: .5px; color: #7c8bab; white-space: nowrap; }
+
+.gauge { margin: 24px 0 16px; }
+.gauge-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; font-size: 10.5px; font-weight: 700; color: #7c8bab; }
+.signal {
+    padding: 3px 10px; border-radius: 20px; font-size: 9.5px; font-weight: 900; letter-spacing: .5px;
+    border: 1px solid transparent;
+}
+.signal.buy { color: #4ade80; background: rgba(74,222,128,.1); border-color: rgba(74,222,128,.35); }
+.signal.good { color: #93c5fd; background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.35); }
+.signal.wait { color: #fbbf24; background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.3); }
+.gauge-track {
+    position: relative; height: 8px; border-radius: 10px;
+    background: linear-gradient(90deg, #22c55e, #4f46e5 50%, #a855f7 75%, #f43f5e);
+    opacity: .9;
+}
+.gauge-dot {
+    position: absolute; top: 50%; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%;
+    background: #fff; border: 3px solid #7c3aed; box-shadow: 0 0 14px rgba(139,92,246,.9);
+    transition: left 1.1s cubic-bezier(.16,.9,.3,1);
+}
+.gauge-mark { position: absolute; top: -4px; width: 2px; height: 16px; margin-left: -1px; border-radius: 2px; background: rgba(255,255,255,.55); }
+.gauge-mark.target { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.8); }
+.gauge-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: #7c8bab; }
+.gauge-note { margin-top: 8px; font-size: 11.5px; color: #8493b8; }
+
+.compare-check {
+    position: absolute; top: 10px; left: 10px; z-index: 4; display: none;
+    align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; cursor: pointer;
+    background: rgba(11,14,25,.88); border: 1px solid rgba(139,92,246,.4); color: #c4b5fd; font-size: 10.5px; font-weight: 800;
+}
+.compare-mode .compare-check { display: inline-flex; }
+.compare-check input { accent-color: #7c3aed; cursor: pointer; }
+
+.status { display: inline-flex; align-items: center; gap: 6px; }
+.status::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; animation: statusPulse 1.8s ease-in-out infinite; }
+.view-btn { transition: .25s; }
+.view-btn:hover { border-color: rgba(139,92,246,.55); box-shadow: 0 0 16px rgba(139,92,246,.25); }
+
+.watchlist-grid.list-view { grid-template-columns: 1fr; }
+.watchlist-grid.list-view .product-card { display: flex; align-items: stretch; }
+.watchlist-grid.list-view .product-image-wrapper { width: 200px; flex-shrink: 0; height: auto; }
+.watchlist-grid.list-view .product-content { flex: 1; min-width: 0; }
+
+.wl-nomatch { grid-column: 1 / -1; padding: 40px 20px; text-align: center; color: #8493b8; font-size: 14px; display: none; }
+.watchlist-card { position: relative; }
+
+/* compare bar */
+.compare-bar {
+    position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 140%); z-index: 500;
+    width: min(880px, calc(100% - 30px)); padding: 16px 18px; border-radius: 16px;
+    background: rgba(10,13,28,.94); backdrop-filter: blur(16px);
+    border: 1px solid rgba(139,92,246,.4); box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(139,92,246,.2);
+    transition: transform .45s cubic-bezier(.16,.9,.3,1);
+}
+.compare-bar.show { transform: translate(-50%, 0); }
+.compare-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 800; }
+.compare-head button { cursor: pointer; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: #cbd5e1; border-radius: 8px; padding: 5px 11px; font-size: 11px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.compare-table th, .compare-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.06); }
+.compare-table th { color: #7c8bab; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; }
+.compare-table td.best { color: #4ade80; font-weight: 900; }
+.compare-hint { color: #8493b8; font-size: 12px; }
+
+@media (max-width: 900px) { .insights-strip { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+    .watchlist-grid.list-view .product-card { flex-direction: column; }
+    .watchlist-grid.list-view .product-image-wrapper { width: 100%; }
+    .compare-table { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .product-card, .watchlist-stat { opacity: 1; animation: none; } }
 
 </style>
 
@@ -1048,12 +1261,36 @@
                 Monitoring Status
             </div>
 
-            <div class="stat-value">
+                    <div class="stat-value">
                 Active
             </div>
 
         </div>
 
+    </section>
+
+
+    <!-- WATCHLIST INSIGHTS (extra feature, frontend only) -->
+
+    <section class="insights-strip">
+
+        <div class="insight-tile">
+            <span class="insight-tag">BEST DEAL RIGHT NOW</span>
+            <div class="insight-big" id="insBest">Analysing…</div>
+            <div class="insight-small" id="insBestSub"></div>
+        </div>
+
+        <div class="insight-tile">
+            <span class="insight-tag">SAVINGS VS PEAK PRICE</span>
+            <div class="insight-big green" id="insSave">₹0</div>
+            <div class="insight-small">How much cheaper your products are versus their highest recorded price.</div>
+        </div>
+
+        <div class="insight-tile">
+            <span class="insight-tag">GAP TO ALL TARGETS</span>
+            <div class="insight-big" id="insGap">₹0</div>
+            <div class="insight-small" id="insGapSub"></div>
+        </div>
 
     </section>
 
@@ -1083,18 +1320,57 @@
         {% if products %}
 
 
+        <div class="wl-toolbar">
+
+            <div class="wl-search">
+                <span class="wl-search-icon">🔍</span>
+                <input type="text" id="wlSearch" placeholder="Search watchlist..." autocomplete="off">
+            </div>
+
+            <button type="button" class="filter-chip active" data-filter="all">All</button>
+            <button type="button" class="filter-chip" data-filter="reached">Target Reached</button>
+            <button type="button" class="filter-chip" data-filter="good">Good Deals</button>
+            <button type="button" class="filter-chip" data-filter="wait">Wait</button>
+
+            <select class="sort-select" id="wlSort">
+                <option value="default">Sort: Default</option>
+                <option value="score">Best deal score</option>
+                <option value="peak">Biggest saving vs peak</option>
+                <option value="low">Price: Low → High</option>
+                <option value="high">Price: High → Low</option>
+                <option value="name">Name: A → Z</option>
+            </select>
+
+            <div class="view-toggle">
+                <button type="button" class="active" data-view="grid" title="Grid view">▦</button>
+                <button type="button" data-view="list" title="List view">☰</button>
+            </div>
+
+            <button type="button" class="tool-btn" id="compareToggle">⚖ Compare</button>
+            <button type="button" class="tool-btn" id="wlExport">⬇ CSV</button>
+
+        </div>
+
         <div class="watchlist-grid">
 
 
             {% for product in products %}
 
 
-            <div class="product-card">
+            <div class="product-card"
+                 data-name="{{ product.product_name or '' }}"
+                 data-current="{{ product.current_price|float }}"
+                 data-target="{{ product.target_price|float }}"
+                 data-lowest="{{ product.lowest_price|float }}"
+                 data-average="{{ product.average_price|float }}"
+                 data-highest="{{ product.highest_price|float }}">
 
 
                 <!-- PRODUCT IMAGE -->
 
                 <div class="product-image-wrapper">
+
+                    <label class="compare-check"><input type="checkbox" class="compare-input"> Compare</label>
 
                     {% if product.product_image %}
 
@@ -1123,10 +1399,11 @@
 
                     <!-- PRODUCT NAME -->
 
-                    <div class="product-name">
-
-                        {{ product.product_name or "Unknown Product" }}
-
+                    <div class="name-row">
+                        <div class="product-name">
+                            {{ product.product_name or "Unknown Product" }}
+                        </div>
+                        <div class="deal-ring"><span>0</span><small>DEAL</small></div>
                     </div>
 
 
@@ -1234,6 +1511,22 @@
 
 
 
+                    <!-- PRICE POSITION GAUGE (extra feature) -->
+
+                    <div class="gauge">
+                        <div class="gauge-top">
+                            <span>Price position</span>
+                            <span class="signal">—</span>
+                        </div>
+                        <div class="gauge-track">
+                            <div class="gauge-mark avg" title="Average"></div>
+                            <div class="gauge-mark target" title="Your target"></div>
+                            <div class="gauge-dot"></div>
+                        </div>
+                        <div class="gauge-labels"><span>Lowest</span><span>Highest</span></div>
+                        <div class="gauge-note"></div>
+                    </div>
+
                     <!-- STATUS -->
 
                     {% if product.current_price is not none
@@ -1274,9 +1567,9 @@
 
             {% endfor %}
 
+            <div class="wl-nomatch" id="wlNoMatch">No products match your search or filter.</div>
 
         </div>
-
 
         {% else %}
 
@@ -1311,7 +1604,281 @@
 
 </main>
 
+<!-- COMPARE BAR (extra feature, frontend only) -->
+
+<div class="compare-bar" id="compareBar">
+    <div class="compare-head">
+        <span>⚖ Compare products (pick up to 3)</span>
+        <button type="button" id="compareClose">Close</button>
+    </div>
+    <div class="compare-hint" id="compareHint">Tick “Compare” on the cards you want side by side.</div>
+    <table class="compare-table" id="compareTable"></table>
 </div>
 
+</div>
+
+
+<script>
+(function () {
+
+    var grid = document.querySelector(".watchlist-grid");
+    var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll(".product-card")) : [];
+
+    function inr(n) { return "\u20B9" + Number(n).toLocaleString("en-IN", { maximumFractionDigits: 0 }); }
+
+    /* ---- per-card analysis ---- */
+    cards.forEach(function (card, i) {
+        card.dataset.index = i;
+        var cur = parseFloat(card.dataset.current) || 0;
+        var tgt = parseFloat(card.dataset.target) || 0;
+        var low = parseFloat(card.dataset.lowest) || 0;
+        var avg = parseFloat(card.dataset.average) || 0;
+        var high = parseFloat(card.dataset.highest) || 0;
+
+        var range = high - low;
+        var pos = range > 0 ? Math.min(1, Math.max(0, (cur - low) / range)) : 0.5;
+        var posScore = 100 - pos * 100;
+        var tgtScore = tgt > 0 ? (cur <= tgt ? 100 : Math.max(0, 100 - ((cur - tgt) / tgt) * 200)) : 50;
+        var score = Math.round(Math.min(100, Math.max(0, posScore * 0.6 + tgtScore * 0.4)));
+        var reached = tgt > 0 && cur > 0 && cur <= tgt;
+
+        var signal = score >= 80 ? "buy" : (score >= 55 ? "good" : "wait");
+        var label = signal === "buy" ? "BUY NOW" : (signal === "good" ? "GOOD DEAL" : "WAIT");
+        var color = signal === "buy" ? "#4ade80" : (signal === "good" ? "#60a5fa" : "#fbbf24");
+
+        card.dataset.score = score;
+        card.dataset.signal = signal;
+        card.dataset.reached = reached ? "1" : "0";
+        card.dataset.vspeak = high > 0 ? (high - cur) : 0;
+
+        var ring = card.querySelector(".deal-ring");
+        if (ring) {
+            ring.querySelector("span").textContent = score;
+            ring.style.setProperty("--c", color);
+            setTimeout(function () { ring.style.setProperty("--p", score); }, 300 + i * 70);
+        }
+
+        var sig = card.querySelector(".signal");
+        if (sig) { sig.textContent = label; sig.classList.add(signal); }
+
+        var dot = card.querySelector(".gauge-dot");
+        if (dot) { setTimeout(function () { dot.style.left = (pos * 100) + "%"; }, 350 + i * 70); }
+
+        var avgMark = card.querySelector(".gauge-mark.avg");
+        if (avgMark && range > 0 && avg > 0) {
+            avgMark.style.left = Math.min(100, Math.max(0, ((avg - low) / range) * 100)) + "%";
+        } else if (avgMark) { avgMark.style.display = "none"; }
+
+        var tgtMark = card.querySelector(".gauge-mark.target");
+        if (tgtMark && range > 0 && tgt > 0) {
+            tgtMark.style.left = Math.min(100, Math.max(0, ((tgt - low) / range) * 100)) + "%";
+        } else if (tgtMark) { tgtMark.style.display = "none"; }
+
+        var note = card.querySelector(".gauge-note");
+        if (note) {
+            if (!cur) { note.textContent = "Price data not available yet."; }
+            else if (reached) { note.textContent = "Below your target \u2013 you\u2019re " + inr(tgt - cur) + " under it."; }
+            else if (avg > 0 && cur < avg) { note.textContent = inr(avg - cur) + " below the average price."; }
+            else if (avg > 0) { note.textContent = inr(cur - avg) + " above the average price."; }
+            else { note.textContent = ""; }
+        }
+    });
+
+    /* ---- insights ---- */
+    (function () {
+        var bestEl = document.getElementById("insBest"), bestSub = document.getElementById("insBestSub");
+        var saveEl = document.getElementById("insSave"), gapEl = document.getElementById("insGap"), gapSub = document.getElementById("insGapSub");
+        if (!bestEl) { return; }
+        if (!cards.length) { bestEl.textContent = "\u2014"; saveEl.textContent = "\u20B90"; gapEl.textContent = "\u20B90"; return; }
+        var best = cards[0], save = 0, gap = 0;
+        cards.forEach(function (c) {
+            if (parseFloat(c.dataset.score) > parseFloat(best.dataset.score)) { best = c; }
+            save += Math.max(0, parseFloat(c.dataset.vspeak) || 0);
+            var cur = parseFloat(c.dataset.current) || 0, tgt = parseFloat(c.dataset.target) || 0;
+            if (cur > tgt && tgt > 0) { gap += cur - tgt; }
+        });
+        var nm = best.dataset.name || "Product";
+        if (nm.length > 34) { nm = nm.slice(0, 34) + "\u2026"; }
+        bestEl.textContent = nm;
+        bestSub.textContent = "Deal score " + best.dataset.score + "/100 \u2013 " + (best.dataset.signal === "buy" ? "buy now" : best.dataset.signal === "good" ? "good deal" : "worth waiting");
+        saveEl.textContent = inr(save);
+        gapEl.textContent = inr(gap);
+        gapSub.textContent = gap > 0 ? "Total price drop still needed to hit every target." : "Every product is at or below target!";
+    })();
+
+    if (!grid) { return; }
+
+    /* ---- search / filter / sort ---- */
+    var searchInput = document.getElementById("wlSearch");
+    var noMatch = document.getElementById("wlNoMatch");
+    var activeFilter = "all";
+
+    function applyAll() {
+        var q = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        var visible = 0;
+        cards.forEach(function (card) {
+            var nameEl = card.querySelector(".product-name");
+            var name = nameEl ? nameEl.textContent.toLowerCase() : "";
+            var ok = activeFilter === "all" ||
+                (activeFilter === "reached" && card.dataset.reached === "1") ||
+                (activeFilter === "good" && card.dataset.signal !== "wait") ||
+                (activeFilter === "wait" && card.dataset.signal === "wait");
+            var show = ok && (!q || name.indexOf(q) !== -1);
+            card.style.display = show ? "" : "none";
+            if (show) { visible++; }
+        });
+        if (noMatch) { noMatch.style.display = visible === 0 ? "block" : "none"; }
+    }
+    if (searchInput) { searchInput.addEventListener("input", applyAll); }
+
+    document.querySelectorAll(".filter-chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+            document.querySelectorAll(".filter-chip").forEach(function (c) { c.classList.remove("active"); });
+            chip.classList.add("active");
+            activeFilter = chip.dataset.filter;
+            applyAll();
+        });
+    });
+
+    var sortSel = document.getElementById("wlSort");
+    if (sortSel) {
+        sortSel.addEventListener("change", function () {
+            var m = sortSel.value;
+            var sorted = cards.slice().sort(function (a, b) {
+                var ac = parseFloat(a.dataset.current) || 0, bc = parseFloat(b.dataset.current) || 0;
+                if (m === "score") { return b.dataset.score - a.dataset.score; }
+                if (m === "low") { return ac - bc; }
+                if (m === "high") { return bc - ac; }
+                if (m === "peak") { return b.dataset.vspeak - a.dataset.vspeak; }
+                if (m === "name") { return (a.dataset.name || "").localeCompare(b.dataset.name || ""); }
+                return a.dataset.index - b.dataset.index;
+            });
+            sorted.forEach(function (c) { grid.insertBefore(c, noMatch); });
+        });
+    }
+
+    document.querySelectorAll(".view-toggle button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            document.querySelectorAll(".view-toggle button").forEach(function (b) { b.classList.remove("active"); });
+            btn.classList.add("active");
+            grid.classList.toggle("list-view", btn.dataset.view === "list");
+        });
+    });
+
+    /* ---- compare mode ---- */
+    var compareBtn = document.getElementById("compareToggle");
+    var bar = document.getElementById("compareBar");
+    var cTable = document.getElementById("compareTable");
+    var cHint = document.getElementById("compareHint");
+    var cClose = document.getElementById("compareClose");
+    var picked = [];
+
+    function renderCompare() {
+        if (!bar) { return; }
+        if (!picked.length) { cTable.innerHTML = ""; cHint.style.display = "block"; return; }
+        cHint.style.display = "none";
+        var rows = [
+            ["Product", function (c) { return c.dataset.name || "Product"; }],
+            ["Current", function (c) { return parseFloat(c.dataset.current); }, "min"],
+            ["Lowest", function (c) { return parseFloat(c.dataset.lowest); }],
+            ["Average", function (c) { return parseFloat(c.dataset.average); }],
+            ["Target", function (c) { return parseFloat(c.dataset.target); }],
+            ["Deal score", function (c) { return parseFloat(c.dataset.score); }, "max"]
+        ];
+        cTable.innerHTML = "";
+        rows.forEach(function (r) {
+            var tr = document.createElement("tr");
+            var th = document.createElement("th"); th.textContent = r[0]; tr.appendChild(th);
+            var vals = picked.map(r[1]);
+            var bestVal = null;
+            if (r[2] === "min") { bestVal = Math.min.apply(null, vals); }
+            if (r[2] === "max") { bestVal = Math.max.apply(null, vals); }
+            vals.forEach(function (v) {
+                var td = document.createElement("td");
+                if (typeof v === "number") { td.textContent = r[0] === "Deal score" ? v + "/100" : inr(v); }
+                else { td.textContent = v.length > 26 ? v.slice(0, 26) + "\u2026" : v; }
+                if (bestVal !== null && v === bestVal && picked.length > 1) { td.className = "best"; }
+                tr.appendChild(td);
+            });
+            cTable.appendChild(tr);
+        });
+    }
+
+    if (compareBtn && bar) {
+        compareBtn.addEventListener("click", function () {
+            var on = !grid.classList.contains("compare-mode");
+            grid.classList.toggle("compare-mode", on);
+            compareBtn.classList.toggle("on", on);
+            bar.classList.toggle("show", on);
+            if (!on) {
+                picked = [];
+                cards.forEach(function (c) { c.classList.remove("selected"); var i = c.querySelector(".compare-input"); if (i) { i.checked = false; } });
+            }
+            renderCompare();
+        });
+        if (cClose) { cClose.addEventListener("click", function () { if (grid.classList.contains("compare-mode")) { compareBtn.click(); } }); }
+        cards.forEach(function (card) {
+            var input = card.querySelector(".compare-input");
+            if (!input) { return; }
+            input.addEventListener("change", function () {
+                if (input.checked) {
+                    if (picked.length >= 3) { input.checked = false; return; }
+                    picked.push(card); card.classList.add("selected");
+                } else {
+                    picked = picked.filter(function (c) { return c !== card; });
+                    card.classList.remove("selected");
+                }
+                renderCompare();
+            });
+        });
+    }
+
+    /* ---- CSV export ---- */
+    var exp = document.getElementById("wlExport");
+    if (exp) {
+        exp.addEventListener("click", function () {
+            var rows = [["Product", "Current", "Target", "Lowest", "Average", "Highest", "Deal Score", "Signal"]];
+            cards.forEach(function (c) {
+                if (c.style.display === "none") { return; }
+                rows.push(['"' + (c.dataset.name || "").replace(/"/g, '""') + '"', c.dataset.current, c.dataset.target, c.dataset.lowest, c.dataset.average, c.dataset.highest, c.dataset.score, c.dataset.signal]);
+            });
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([rows.map(function (r) { return r.join(","); }).join("\n")], { type: "text/csv" }));
+            a.download = "pricelens-watchlist.csv";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        });
+    }
+
+    /* ---- 3D tilt ---- */
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+        cards.forEach(function (card) {
+            card.addEventListener("mousemove", function (e) {
+                if (grid.classList.contains("compare-mode")) { return; }
+                var r = card.getBoundingClientRect();
+                var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+                card.style.transform = "perspective(900px) rotateY(" + (x * 5) + "deg) rotateX(" + (-y * 5) + "deg) translateY(-4px)";
+            });
+            card.addEventListener("mouseleave", function () { card.style.transform = ""; });
+        });
+    }
+
+})();
+
+/* ---- count-up ---- */
+(function () {
+    document.querySelectorAll(".stat-value").forEach(function (el) {
+        var raw = el.textContent.trim();
+        if (!/^\d+$/.test(raw)) { return; }
+        var target = parseInt(raw, 10);
+        if (target < 2) { return; }
+        var cur = 0, step = Math.max(1, Math.ceil(target / 30));
+        el.textContent = "0";
+        var t = setInterval(function () {
+            cur += step;
+            if (cur >= target) { el.textContent = target; clearInterval(t); } else { el.textContent = cur; }
+        }, 28);
+    });
+})();
+</script>
 
 {% endblock %}

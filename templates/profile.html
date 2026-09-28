@@ -417,6 +417,183 @@
 
 }
 
+
+/* =====================================================
+   PRICELENS THEME UPGRADE (navy + purple, animated)
+===================================================== */
+
+@keyframes titleShine { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+@keyframes statusPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.3); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes borderShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes botFloat { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(-3deg); } }
+@keyframes botBlink { 0%,88%,100% { transform: scaleY(1); } 92% { transform: scaleY(.15); } }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+
+.profile-title {
+    background: linear-gradient(90deg, #ffffff, #c4b5fd, #93c5fd, #ffffff);
+    background-size: 300% auto;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: titleShine 8s linear infinite;
+}
+.profile-subtitle { color: #8493b8; font-size: 14px; }
+
+/* sidebar */
+.sidebar-link:hover { transform: translateX(3px); }
+.sidebar-link.active { border: 1px solid rgba(139,92,246,.4); box-shadow: 0 0 18px rgba(139,92,246,.2); position: relative; }
+.sidebar-link.active::before {
+    content: ""; position: absolute; left: -15px; width: 3px; height: 60%; border-radius: 3px;
+    background: linear-gradient(180deg, #8b5cf6, #3b82f6); box-shadow: 0 0 10px rgba(139,92,246,.8);
+}
+.sidebar-icon { transition: .25s; }
+.sidebar-link.active .sidebar-icon { background: linear-gradient(135deg, #8b5cf6, #1d4ed8); box-shadow: 0 0 12px rgba(139,92,246,.4); }
+
+/* greeting bot */
+.greet-row {
+    display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 22px; border-radius: 14px;
+    background: linear-gradient(160deg, rgba(124,58,237,.14), rgba(29,78,216,.09));
+    border: 1px solid rgba(139,92,246,.2); position: relative; overflow: hidden;
+}
+.greet-row::before {
+    content: ""; position: absolute; width: 150px; height: 150px; top: -55px; right: -45px;
+    background: radial-gradient(circle, rgba(59,130,246,.3), transparent 70%); filter: blur(20px); pointer-events: none;
+}
+.greet-avatar { width: 48px; height: 48px; flex-shrink: 0; animation: botFloat 3.2s ease-in-out infinite; }
+.greet-avatar svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 14px rgba(139,92,246,.5)); }
+.bot-eye { animation: botBlink 3.6s ease-in-out infinite; transform-origin: center; }
+.bot-eye.right { animation-delay: .12s; }
+.greet-text { position: relative; z-index: 2; color: #b9c3df; font-size: 14px; line-height: 1.6; }
+.greet-text strong { color: #d8b4fe; }
+
+/* hero: id card + health */
+.profile-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; margin-bottom: 18px; }
+
+.id-card {
+    --mx: 50%; --my: 50%;
+    position: relative; overflow: hidden; padding: 26px; border-radius: 20px; min-height: 230px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1d4ed8 80%, #1e3a8a 100%);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 45px rgba(99,102,241,.25);
+    transition: transform .15s ease-out; transform-style: preserve-3d; will-change: transform;
+    animation: fadeUp .6s cubic-bezier(.16,.9,.3,1) both;
+}
+.id-card::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.28), transparent 45%);
+    mix-blend-mode: overlay;
+}
+.id-card::after {
+    content: ""; position: absolute; width: 260px; height: 260px; right: -90px; top: -110px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12); box-shadow: 0 0 0 30px rgba(255,255,255,.03), 0 0 0 60px rgba(255,255,255,.02);
+    pointer-events: none;
+}
+.id-top { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; margin-bottom: 26px; }
+.id-brand { display: flex; align-items: center; gap: 9px; font-weight: 900; font-size: 15px; letter-spacing: .3px; }
+.id-brand-mark { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); box-shadow: 0 0 16px rgba(147,197,253,.5); }
+.id-tag { padding: 3px 10px; border-radius: 20px; font-size: 9.5px; font-weight: 800; letter-spacing: .8px; color: #dbeafe; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
+.id-body { display: flex; align-items: center; gap: 18px; position: relative; z-index: 2; }
+.id-avatar {
+    width: 64px; height: 64px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #8b5cf6, #1d4ed8);
+    border: 2px solid rgba(255,255,255,.35); box-shadow: 0 0 24px rgba(139,92,246,.6);
+}
+.id-name { font-size: 20px; font-weight: 900; line-height: 1.2; word-break: break-word; }
+.id-sub { margin-top: 5px; font-size: 12px; color: #c7d2fe; }
+.id-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 26px; position: relative; z-index: 2; gap: 12px; flex-wrap: wrap; }
+.id-field small { display: block; font-size: 9px; letter-spacing: .8px; color: #a5b4fc; font-weight: 800; margin-bottom: 3px; }
+.id-field span { font-size: 13px; font-weight: 800; }
+.id-chip { width: 38px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, #fde68a, #f59e0b); opacity: .9; box-shadow: inset 0 0 0 1px rgba(0,0,0,.2); }
+
+.health-card {
+    padding: 24px; border-radius: 20px; position: relative; overflow: hidden;
+    background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.07);
+    animation: fadeUp .6s .1s cubic-bezier(.16,.9,.3,1) both;
+}
+.health-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.health-sub { color: #8493b8; font-size: 12px; margin-bottom: 18px; }
+.health-body { display: flex; align-items: center; gap: 22px; }
+.health-ring {
+    --p: 0;
+    width: 104px; height: 104px; border-radius: 50%; flex-shrink: 0; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: conic-gradient(#8b5cf6 calc(var(--p) * 1%), rgba(255,255,255,.08) 0);
+    box-shadow: 0 0 30px rgba(139,92,246,.3); transition: background 1.2s ease;
+}
+.health-ring::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: #0b0e19; }
+.health-ring span { position: relative; z-index: 2; font-size: 26px; font-weight: 900; }
+.health-ring small { font-size: 13px; color: #8493b8; font-weight: 700; }
+.health-list { list-style: none; flex: 1; min-width: 0; }
+.health-list li { display: flex; align-items: center; gap: 9px; padding: 7px 0; font-size: 12.5px; color: #cbd5e1; }
+.health-list li .tick { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; }
+.health-list li.ok .tick { background: rgba(74,222,128,.15); color: #4ade80; border: 1px solid rgba(74,222,128,.4); }
+.health-list li.todo .tick { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.35); }
+.health-tip { margin-top: 14px; padding: 10px 12px; border-radius: 10px; font-size: 12px; color: #93c5fd; background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.22); display: none; }
+
+/* profile card */
+.profile-card { position: relative; overflow: hidden; transition: .3s ease; animation: fadeUp .6s .15s cubic-bezier(.16,.9,.3,1) both; }
+.profile-card:hover { border-color: rgba(139,92,246,.25); box-shadow: 0 16px 40px rgba(0,0,0,.25), 0 0 25px rgba(139,92,246,.08); }
+.profile-big-avatar { background: linear-gradient(135deg, #8b5cf6, #1d4ed8); box-shadow: 0 0 26px rgba(139,92,246,.45); transition: .3s; }
+.profile-big-avatar:hover { transform: rotate(-6deg) scale(1.06); }
+.profile-name { font-size: 22px; }
+.profile-email { color: #8493b8; font-size: 13px; }
+.header-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.avatar-picker { display: flex; align-items: center; gap: 12px; padding: 16px 0 4px; flex-wrap: wrap; }
+.avatar-picker label { color: #7c8bab; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: .25s; }
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: #fff; box-shadow: 0 0 14px rgba(255,255,255,.35); }
+.picker-note { color: #566482; font-size: 11px; }
+
+.info-card { position: relative; transition: .25s ease; }
+.info-card:hover { border-color: rgba(139,92,246,.35); background: rgba(139,92,246,.05); transform: translateY(-3px); }
+.info-label { color: #7c8bab; font-size: 10.5px; letter-spacing: .5px; }
+.info-value { font-size: 14px; word-break: break-word; padding-right: 64px; }
+.mini-actions { position: absolute; top: 13px; right: 13px; display: flex; gap: 6px; }
+.mini-btn {
+    width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-size: 12px;
+    border: 1px solid rgba(139,92,246,.3); background: rgba(139,92,246,.08); color: #c4b5fd; transition: .25s;
+}
+.mini-btn:hover { background: rgba(139,92,246,.2); color: #fff; box-shadow: 0 0 12px rgba(139,92,246,.25); }
+.mini-btn.done { color: #4ade80; border-color: rgba(74,222,128,.45); }
+.verified, .not-verified { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; }
+.verified::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.9); animation: statusPulse 1.8s ease-in-out infinite; }
+
+.tool-btn {
+    height: 36px; padding: 0 14px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700;
+    border: 1px solid rgba(139,92,246,.3); background: rgba(139,92,246,.08); color: #c4b5fd; transition: .25s;
+}
+.tool-btn:hover { background: rgba(139,92,246,.16); color: #fff; box-shadow: 0 0 16px rgba(139,92,246,.2); transform: translateY(-2px); }
+.tool-btn.done { color: #4ade80; border-color: rgba(74,222,128,.45); }
+
+/* account status + timeline */
+.account-card { margin-bottom: 18px; transition: .3s ease; animation: fadeUp .6s .2s cubic-bezier(.16,.9,.3,1) both; }
+.account-card:hover { border-color: rgba(139,92,246,.25); box-shadow: 0 16px 40px rgba(0,0,0,.25); }
+.card-title { font-size: 16px; }
+.status-label { color: #8493b8; font-size: 12.5px; }
+.status-value { font-size: 12px; display: inline-flex; align-items: center; gap: 7px; }
+.status-value::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.9); animation: statusPulse 1.6s ease-in-out infinite; }
+
+.timeline { position: relative; padding-left: 26px; }
+.timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(180deg, #8b5cf6, #1d4ed8); opacity: .5; border-radius: 2px; }
+.tl-item { position: relative; padding: 4px 0 18px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-dot { position: absolute; left: -26px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: #0b0e19; border: 3px solid #8b5cf6; box-shadow: 0 0 12px rgba(139,92,246,.7); }
+.tl-item.todo .tl-dot { border-color: #fbbf24; box-shadow: 0 0 12px rgba(251,191,36,.5); }
+.tl-title { font-size: 13.5px; font-weight: 800; color: #e2e8f0; }
+.tl-desc { font-size: 12px; color: #8493b8; margin-top: 3px; }
+
+@media (max-width: 1000px) { .profile-hero { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+    .health-body { flex-direction: column; align-items: flex-start; }
+    .profile-header { flex-wrap: wrap; }
+    .header-actions { margin-left: 0; }
+}
+@media print {
+    .profile-sidebar, .navbar, .greet-row, .header-actions, .avatar-picker, .mini-actions { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) { .id-card, .health-card, .profile-card, .account-card { animation: none; } }
+
 </style>
 
 
@@ -542,6 +719,92 @@
 
 
 
+    <!-- PROFILE DATA (read-only, from existing user object) -->
+    <div id="profileData" style="display:none;"
+         data-name="{{ user.full_name }}"
+         data-email="{{ user.email }}"
+         data-id="{{ user.id }}"
+         data-created="{{ user.created_at }}"
+         data-verified="{{ 1 if user.email_verified else 0 }}"></div>
+
+
+    <!-- GREETING (extra feature, frontend only) -->
+
+    <div class="greet-row">
+        <div class="greet-avatar">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="pfBotBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs>
+                <line x1="50" y1="8" x2="50" y2="20" stroke="#818cf8" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="50" cy="7" r="5" fill="#3b82f6"/>
+                <rect x="20" y="20" width="60" height="52" rx="16" fill="url(#pfBotBody)"/>
+                <rect x="20" y="20" width="60" height="52" rx="16" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+                <rect x="29" y="32" width="42" height="28" rx="10" fill="#0f1120"/>
+                <rect class="bot-eye left" x="36" y="42" width="9" height="9" rx="3" fill="#93c5fd"/>
+                <rect class="bot-eye right" x="55" y="42" width="9" height="9" rx="3" fill="#93c5fd"/>
+                <rect x="10" y="38" width="8" height="16" rx="4" fill="#7c3aed"/>
+                <rect x="82" y="38" width="8" height="16" rx="4" fill="#7c3aed"/>
+            </svg>
+        </div>
+        <div class="greet-text" id="greetText">Welcome back!</div>
+    </div>
+
+
+    <!-- IDENTITY CARD + ACCOUNT HEALTH (extra features) -->
+
+    <section class="profile-hero">
+
+        <div class="id-card" id="idCard">
+
+            <div class="id-top">
+                <div class="id-brand"><div class="id-brand-mark">P</div> PriceLens</div>
+                <div class="id-tag">MEMBER ID</div>
+            </div>
+
+            <div class="id-body">
+                <div class="id-avatar">{{ user.full_name[0]|upper }}</div>
+                <div>
+                    <div class="id-name">{{ user.full_name }}</div>
+                    <div class="id-sub">Price Monitoring Account</div>
+                </div>
+            </div>
+
+            <div class="id-bottom">
+                <div class="id-field"><small>ACCOUNT ID</small><span>#{{ user.id }}</span></div>
+                <div class="id-field"><small>MEMBER SINCE</small><span id="idSince">—</span></div>
+                <div class="id-chip"></div>
+            </div>
+
+        </div>
+
+
+        <div class="health-card">
+
+            <div class="health-title">Account Health</div>
+            <div class="health-sub">Based on your profile details.</div>
+
+            <div class="health-body">
+
+                <div class="health-ring" id="healthRing">
+                    <span><b id="healthScore">0</b><small>%</small></span>
+                </div>
+
+                <ul class="health-list">
+                    <li id="hNameItem"><span class="tick"></span> Full name added</li>
+                    <li id="hEmailItem"><span class="tick"></span> Email address added</li>
+                    <li id="hVerItem"><span class="tick"></span> Email verified</li>
+                    <li id="hMonItem"><span class="tick"></span> Price monitoring active</li>
+                </ul>
+
+            </div>
+
+            <div class="health-tip" id="healthTip">Verify your email to complete your profile.</div>
+
+        </div>
+
+    </section>
+
+
+
     <!-- =================================================
          PROFILE
     ================================================= -->
@@ -572,6 +835,19 @@
             </div>
 
 
+            <div class="header-actions">
+                <button type="button" class="tool-btn" id="copySummaryBtn">📋 Copy Summary</button>
+                <button type="button" class="tool-btn" id="printProfileBtn">🖨️ Print</button>
+            </div>
+
+
+        </div>
+
+
+        <div class="avatar-picker">
+            <label>Avatar style</label>
+            <div id="swatches" style="display:flex;gap:10px;"></div>
+            <span class="picker-note">Saved in this browser only</span>
         </div>
 
 
@@ -703,9 +979,221 @@
     </section>
 
 
+<!-- ACCOUNT JOURNEY (extra feature) -->
+
+    <section class="account-card">
+
+        <div class="card-title">Account Journey</div>
+
+        <div class="timeline">
+
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-title">Account created</div>
+                <div class="tl-desc" id="tlCreatedDesc">{{ user.created_at }}</div>
+            </div>
+
+            <div class="tl-item" id="tlVerified">
+                <div class="tl-dot"></div>
+                <div class="tl-title">Email verification</div>
+                <div class="tl-desc" id="tlVerifiedDesc"></div>
+            </div>
+
+            <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-title">Price monitoring active</div>
+                <div class="tl-desc">PriceLens is watching your tracked products.</div>
+            </div>
+
+        </div>
+
+    </section>
+
+
 </main>
 
 </div>
 
+
+<script>
+(function () {
+
+    var root = document.getElementById("profileData");
+    if (!root) { return; }
+
+    var fullName = root.dataset.name || "";
+    var email = root.dataset.email || "";
+    var uid = root.dataset.id || "";
+    var createdRaw = (root.dataset.created || "").trim();
+    var verified = root.dataset.verified === "1";
+    var firstName = fullName.split(" ")[0] || "there";
+
+    /* ---- greeting ---- */
+    var g = document.getElementById("greetText");
+    if (g) {
+        var h = new Date().getHours();
+        var part = h < 12 ? "Good morning" : (h < 17 ? "Good afternoon" : "Good evening");
+        g.innerHTML = part + ", <strong></strong>! Here\u2019s your PriceLens identity and account health at a glance.";
+        g.querySelector("strong").textContent = firstName;
+    }
+
+    /* ---- member since ---- */
+    var created = null;
+    if (createdRaw) {
+        var d = new Date(createdRaw.replace(" ", "T"));
+        if (!isNaN(d.getTime())) { created = d; }
+    }
+    var sinceEl = document.getElementById("idSince");
+    var tlSince = document.getElementById("tlCreatedDesc");
+    if (created) {
+        var days = Math.max(0, Math.floor((Date.now() - created.getTime()) / 86400000));
+        var opts = { year: "numeric", month: "short" };
+        if (sinceEl) { sinceEl.textContent = created.toLocaleDateString("en-IN", opts); }
+        if (tlSince) { tlSince.textContent = "Member for " + days + " day" + (days === 1 ? "" : "s") + " (" + createdRaw + ")"; }
+    } else {
+        if (sinceEl) { sinceEl.textContent = createdRaw || "\u2014"; }
+        if (tlSince) { tlSince.textContent = createdRaw || "Account created"; }
+    }
+
+    /* ---- account health (from real profile fields) ---- */
+    var checks = [
+        { id: "hNameItem",  ok: fullName.trim().length > 0 },
+        { id: "hEmailItem", ok: email.trim().length > 0 },
+        { id: "hVerItem",   ok: verified },
+        { id: "hMonItem",   ok: true }
+    ];
+    var passed = 0;
+    checks.forEach(function (c) {
+        var li = document.getElementById(c.id);
+        if (!li) { return; }
+        li.classList.add(c.ok ? "ok" : "todo");
+        li.querySelector(".tick").textContent = c.ok ? "\u2713" : "!";
+        if (c.ok) { passed++; }
+    });
+    var score = Math.round((passed / checks.length) * 100);
+    var ring = document.getElementById("healthRing");
+    var scoreEl = document.getElementById("healthScore");
+    if (ring) { setTimeout(function () { ring.style.setProperty("--p", score); }, 300); }
+    if (scoreEl) {
+        var cur = 0;
+        var t = setInterval(function () {
+            cur += 4;
+            if (cur >= score) { cur = score; clearInterval(t); }
+            scoreEl.textContent = cur;
+        }, 25);
+    }
+    var tip = document.getElementById("healthTip");
+    if (tip && !verified) { tip.style.display = "block"; }
+
+    var tlVer = document.getElementById("tlVerified");
+    if (tlVer && !verified) { tlVer.classList.add("todo"); }
+    var tlVerDesc = document.getElementById("tlVerifiedDesc");
+    if (tlVerDesc) { tlVerDesc.textContent = verified ? "Your email address is verified." : "Email not verified yet."; }
+
+    /* ---- clipboard helper ---- */
+    function copy(text, btn, doneText) {
+        if (!navigator.clipboard) { return; }
+        navigator.clipboard.writeText(text).then(function () {
+            var old = btn.textContent;
+            btn.textContent = doneText || "\u2713";
+            btn.classList.add("done");
+            setTimeout(function () { btn.textContent = old; btn.classList.remove("done"); }, 1500);
+        });
+    }
+
+    /* ---- mini buttons on info cards (copy / hide email) ---- */
+    document.querySelectorAll(".info-card").forEach(function (card) {
+        var labelEl = card.querySelector(".info-label");
+        var valEl = card.querySelector(".info-value");
+        if (!labelEl || !valEl) { return; }
+        var label = labelEl.textContent.trim().toLowerCase();
+        var actions = document.createElement("div");
+        actions.className = "mini-actions";
+
+        if (label === "full name" || label === "email address" || label === "account id") {
+            var cb = document.createElement("button");
+            cb.type = "button"; cb.className = "mini-btn"; cb.title = "Copy"; cb.textContent = "\u29C9";
+            cb.addEventListener("click", function () {
+                var txt = label === "email address" ? email : (label === "account id" ? uid : fullName);
+                copy(txt, cb);
+            });
+            actions.appendChild(cb);
+        }
+
+        if (label === "email address") {
+            var hidden = false;
+            var eb = document.createElement("button");
+            eb.type = "button"; eb.className = "mini-btn"; eb.title = "Hide / show email"; eb.textContent = "\uD83D\uDC41";
+            eb.addEventListener("click", function () {
+                hidden = !hidden;
+                if (hidden) {
+                    var parts = email.split("@");
+                    var local = parts[0] || "";
+                    valEl.textContent = local.charAt(0) + "\u2022\u2022\u2022\u2022\u2022@" + (parts[1] || "");
+                } else { valEl.textContent = email; }
+            });
+            actions.appendChild(eb);
+        }
+
+        if (actions.children.length) { card.appendChild(actions); }
+    });
+
+    /* ---- header actions ---- */
+    var sum = document.getElementById("copySummaryBtn");
+    if (sum) {
+        sum.addEventListener("click", function () {
+            copy("Name: " + fullName + "\nEmail: " + email + "\nAccount ID: #" + uid + "\nMember since: " + createdRaw, sum, "\u2713 Copied");
+        });
+    }
+    var pr = document.getElementById("printProfileBtn");
+    if (pr) { pr.addEventListener("click", function () { window.print(); }); }
+
+    /* ---- avatar style picker (saved in this browser only) ---- */
+    var styles = [
+        ["#8b5cf6", "#1d4ed8"], ["#7c3aed", "#4f46e5"], ["#2563eb", "#1e3a8a"],
+        ["#a78bfa", "#6d28d9"], ["#1d4ed8", "#7c3aed"]
+    ];
+    var targets = document.querySelectorAll(".profile-big-avatar, .id-avatar");
+    function applyStyle(i) {
+        var s = styles[i] || styles[0];
+        targets.forEach(function (el) { el.style.background = "linear-gradient(135deg," + s[0] + "," + s[1] + ")"; });
+        document.querySelectorAll(".swatch").forEach(function (sw, idx) { sw.classList.toggle("active", idx === i); });
+    }
+    var picker = document.getElementById("swatches");
+    if (picker) {
+        styles.forEach(function (s, i) {
+            var sw = document.createElement("div");
+            sw.className = "swatch";
+            sw.style.background = "linear-gradient(135deg," + s[0] + "," + s[1] + ")";
+            sw.addEventListener("click", function () {
+                applyStyle(i);
+                try { localStorage.setItem("pl_avatar_style", String(i)); } catch (e) {}
+            });
+            picker.appendChild(sw);
+        });
+        var saved = 0;
+        try { saved = parseInt(localStorage.getItem("pl_avatar_style"), 10) || 0; } catch (e) {}
+        applyStyle(saved);
+    }
+
+    /* ---- holographic 3D tilt on ID card ---- */
+    var card = document.getElementById("idCard");
+    if (card && !window.matchMedia("(pointer: coarse)").matches) {
+        card.addEventListener("mousemove", function (e) {
+            var r = card.getBoundingClientRect();
+            var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+            card.style.setProperty("--mx", (x * 100) + "%");
+            card.style.setProperty("--my", (y * 100) + "%");
+            card.style.transform = "perspective(900px) rotateY(" + ((x - .5) * 12) + "deg) rotateX(" + (-(y - .5) * 12) + "deg)";
+        });
+        card.addEventListener("mouseleave", function () {
+            card.style.transform = "";
+            card.style.setProperty("--mx", "50%");
+            card.style.setProperty("--my", "50%");
+        });
+    }
+
+})();
+</script>
 
 {% endblock %}
