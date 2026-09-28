@@ -30,6 +30,8 @@ app = Flask(__name__)
 
 app.secret_key = "pricelens-secret-key-change-later"
 
+BASE_URL = "https://pricelens-backend-hcru.onrender.com"
+
 
 # ==============================
 # DATABASE CONNECTION
@@ -117,7 +119,8 @@ def send_verification_email(
 ):
 
     verification_link = (
-        "http://127.0.0.1:5000/verify/"
+        BASE_URL
+        + "/verify/"
         + quote(token)
     )
 
